@@ -1,15 +1,11 @@
 require 'sinatra/base'
+
 require 'sinatra/param/version'
-require 'date'
-require 'time'
+require 'sinatra/param/error'
 
 module Sinatra
   module Param
     Boolean = :boolean
-
-    class InvalidParameterError < StandardError
-      attr_accessor :param, :options
-    end
 
     def param(name, type, options = {})
       name = name.to_s
