@@ -2,9 +2,12 @@ require 'sinatra/base'
 
 require 'sinatra/param/version'
 require 'sinatra/param/error'
+require 'sinatra/param/support'
 
 module Sinatra
   module Param
+    include Support
+
     Boolean = :boolean
 
     def param(name, type, options = {})
@@ -147,15 +150,6 @@ module Sinatra
 
     def validate_any_of!(params, names, options)
       raise InvalidParameterError, "One of parameters [#{names.join(', ')}] is required" if names.count{|name| present?(params[name])} < 1
-    end
-
-    # ActiveSupport #present? and #blank? without patching Object
-    def present?(object)
-      !blank?(object)
-    end
-
-    def blank?(object)
-      object.respond_to?(:empty?) ? object.empty? : !object
     end
   end
 
