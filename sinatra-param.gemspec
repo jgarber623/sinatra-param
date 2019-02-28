@@ -1,26 +1,33 @@
-require File.expand_path('lib/sinatra/param/version', __dir__)
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-Gem::Specification.new do |s|
-  s.name        = 'sinatra-param'
-  s.license     = 'MIT'
-  s.authors     = ['Mattt']
-  s.email       = 'mattt@me.com'
-  s.homepage    = 'https://github.com/mattt/sinatra-param'
-  s.version     = Sinatra::Param::VERSION
-  s.platform    = Gem::Platform::RUBY
-  s.summary     = 'Parameter Validation & Type Coercion for Sinatra.'
-  s.description = 'sinatra-param allows you to declare, validate, and transform endpoint parameters as you would in frameworks like ActiveModel or DataMapper.'
+require 'sinatra/param/version'
 
-  s.add_dependency 'sinatra', '>= 1.3'
+Gem::Specification.new do |spec|
+  spec.required_ruby_version = ['>= 2.4', '< 2.7']
 
-  s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'simplecov'
+  spec.name          = 'sinatra-param'
+  spec.version       = Sinatra::Param::VERSION
+  spec.authors       = ['Mattt', 'Jason Garber']
+  spec.email         = ['mattt@me.com', 'jason@sixtwothree.org']
 
-  s.files         = Dir['./**/*'].reject { |file| file =~ %r{\./(bin|log|pkg|script|spec|test|vendor)} }
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
-  s.require_paths = ['lib']
+  spec.summary       = 'Parameter Validation and Type Coercion for Sinatra applications.'
+  spec.description   = 'Declare, validate, and transform endpoint parameters in a manner similar to frameworks like ActiveModel or DataMapper.'
+  spec.homepage      = 'https://github.com/mattt/sinatra-param'
+  spec.license       = 'MIT'
+
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(bin|example|spec)/}) }
+
+  spec.require_paths = ['lib']
+
+  spec.add_development_dependency 'bundler', '~> 1.17'
+  spec.add_development_dependency 'rack-test', '~> 1.1'
+  spec.add_development_dependency 'rake', '~> 12.3'
+  spec.add_development_dependency 'rspec', '~> 3.8'
+  spec.add_development_dependency 'rubocop', '~> 0.65.0'
+  spec.add_development_dependency 'rubocop-rspec', '~> 1.31'
+  spec.add_development_dependency 'simplecov', '~> 0.16.1'
+  spec.add_development_dependency 'simplecov-console', '~> 0.4.2'
+
+  spec.add_runtime_dependency 'sinatra', '>= 1.3'
 end
