@@ -1,3 +1,10 @@
+require:
+  - rubocop-rspec
+
+Metrics/ClassLength:
+  Exclude:
+    - spec/dummy/app.rb
+
 Metrics/LineLength:
   Enabled: false
 
