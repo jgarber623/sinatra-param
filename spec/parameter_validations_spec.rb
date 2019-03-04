@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Parameter Validations' do
   describe 'required' do
     it 'returns 400 on requests without required fields' do

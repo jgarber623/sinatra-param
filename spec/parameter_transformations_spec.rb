@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Parameter Transformations' do
   describe 'default' do
     it 'sets a default value when none is given' do

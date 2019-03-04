@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Parameter Sets' do
   describe 'any_of' do
     it 'returns 400 on requests that contain fewer than one required parameter' do

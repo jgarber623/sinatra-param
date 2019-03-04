@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Parameter Sets' do
   describe 'one_of' do
     it 'returns 400 on requests that contain more than one mutually exclusive parameter' do

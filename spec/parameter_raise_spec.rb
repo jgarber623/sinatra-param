@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Exception' do
   describe 'raise' do
     it 'should raise error when option is specified' do

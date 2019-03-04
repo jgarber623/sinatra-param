@@ -1,14 +1,11 @@
 require 'sinatra/base'
 require 'sinatra/param'
-require 'date'
-require 'time'
-require 'json'
 
 class App < Sinatra::Base
   helpers Sinatra::Param
 
-  set :show_exceptions, false
   set :raise_errors, true
+  set :show_exceptions, false
 
   before do
     content_type :json
@@ -76,7 +73,7 @@ class App < Sinatra::Base
   end
 
   get '/default' do
-    param :sort, String, default: "title"
+    param :sort, String, default: 'title'
     params.to_json
   end
 
@@ -151,7 +148,7 @@ class App < Sinatra::Base
   end
 
   get '/validation/in' do
-    param :arg, String, in: ['ASC', 'DESC']
+    param :arg, String, in: %w[ASC DESC]
     params.to_json
   end
 
@@ -192,9 +189,7 @@ class App < Sinatra::Base
 
     one_of :a
 
-    {
-      message: 'OK'
-    }.to_json
+    { message: 'OK' }.to_json
   end
 
   get '/one_of/2' do
@@ -204,9 +199,7 @@ class App < Sinatra::Base
 
     one_of :a, :b
 
-    {
-      message: 'OK'
-    }.to_json
+    { message: 'OK' }.to_json
   end
 
   get '/one_of/3' do
@@ -216,9 +209,7 @@ class App < Sinatra::Base
 
     one_of :a, :b, :c
 
-    {
-      message: 'OK'
-    }.to_json
+    { message: 'OK' }.to_json
   end
 
   get '/any_of' do
@@ -228,9 +219,7 @@ class App < Sinatra::Base
 
     any_of :a, :b, :c
 
-    {
-      message: 'OK'
-    }.to_json
+    { message: 'OK' }.to_json
   end
 
   get '/raise/validation/required' do
@@ -245,9 +234,7 @@ class App < Sinatra::Base
 
     one_of :a, :b, :c, raise: true
 
-    {
-      message: 'OK'
-    }.to_json
+    { message: 'OK' }.to_json
   end
 
   get '/raise/any_of' do
@@ -257,9 +244,7 @@ class App < Sinatra::Base
 
     any_of :a, :b, :c, raise: true
 
-    {
-      message: 'OK'
-    }.to_json
+    { message: 'OK' }.to_json
   end
 
   get '/xml' do
@@ -268,7 +253,6 @@ class App < Sinatra::Base
   end
 
   get '/custommessage' do
-    param :a, Integer, within: 1..10, required: true,
-      message: "'a' must be less than 10"
+    param :a, Integer, within: 1..10, required: true, message: "'a' must be less than 10"
   end
 end

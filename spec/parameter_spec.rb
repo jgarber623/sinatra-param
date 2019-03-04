@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Parameter' do
   it 'only sets parameters present in request or with a default value' do
     get('/', a: 'a', b: 'b') do |response|
