@@ -1,7 +1,13 @@
 module Sinatra
   module Param
-    class InvalidParameterError < StandardError
-      attr_accessor :param, :options
-    end
+    class Error < StandardError; end
+
+    class ArgumentError < Error; end
+
+    class InvalidParameterError < Error; end
+
+    class RequiredParameterError < Error; end
+
+    class TooManyParametersError < Error; end
   end
 end

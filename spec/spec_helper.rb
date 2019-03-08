@@ -1,20 +1,15 @@
-unless ENV['CI']
-  require 'simplecov'
-  SimpleCov.start do
-    add_filter 'spec'
-    add_filter '.bundle'
-  end
+require 'simplecov'
+
+ENV['RACK_ENV'] = 'test'
+ENV['SINATRA_ACTIVESUPPORT_WARNING'] = 'false'
+
+require 'bundler/setup'
+
+Bundler.require(:default, :test)
+
+require 'sinatra/json'
+require 'sinatra/test_helpers'
+
+RSpec.configure do |config|
+  config.include Sinatra::TestHelpers
 end
-
-require 'sinatra/param'
-
-require 'rspec'
-require 'rack/test'
-
-require 'dummy/app'
-
-def app
-  App
-end
-
-include Rack::Test::Methods

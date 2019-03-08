@@ -1,15 +1,21 @@
 require:
   - rubocop-rspec
 
-Metrics/ClassLength:
+Metrics/BlockLength:
   Exclude:
-    - spec/dummy/app.rb
+    - spec/**/*_spec.rb
 
 Metrics/LineLength:
   Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 2
 
 Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/SymbolArray:
   Enabled: false
