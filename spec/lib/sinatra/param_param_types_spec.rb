@@ -19,6 +19,16 @@ describe Sinatra::Param, :param do
         json params
       end
 
+      get '/float' do
+        param :foo, :float
+
+        json params
+      end
+
+      get '/float/raise' do
+        param :foo, :float, raise: true
+      end
+
       get '/integer' do
         param :foo, :integer
 
@@ -61,6 +71,29 @@ describe Sinatra::Param, :param do
         expect(last_response.status).to eq(200)
         expect(last_response.body).to eq({ foo: %w[bar biz baz] }.to_json)
       end
+    end
+  end
+
+  context 'when parameter type is Float' do
+    let(:message) { 'Parameter value "bar" must be a Float' }
+    let(:full_message) { "InvalidParameterError: #{message}" }
+
+    it 'raises an InvalidParameterError' do
+      expect { get '/float/raise', foo: 'bar' }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+    end
+
+    it 'halts with a 400 HTTP response code and a JSON response body' do
+      get '/float', foo: 'bar'
+
+      expect(last_response.status).to eq(400)
+      expect(last_response.body).to eq({ message: full_message }.to_json)
+    end
+
+    it 'returns a 200 HTTP response code and a JSON response body' do
+      get '/float', foo: 1.0
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to eq({ foo: 1.0 }.to_json)
     end
   end
 

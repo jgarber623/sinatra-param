@@ -3,7 +3,7 @@ module Sinatra
     class FormatValidator < Validator
       IDENTIFIER = :format
 
-      def self.validate(name, value, type, options)
+      def self.validate(_name, value, type, options)
         format = options[:format]
 
         raise ArgumentError, %(type must be :string (given :#{type})) unless type == :string

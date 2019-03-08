@@ -38,7 +38,7 @@ describe Sinatra::Param, :param do
   end
 
   context 'when parameter must match a specific format' do
-    let(:message) { 'Parameter value "bar" must match format ^https?://'}
+    let(:message) { 'Parameter value "bar" must match format ^https?://' }
     let(:full_message) { "InvalidParameterError: #{message}" }
 
     it 'raises an ArgumentError when type is not :string' do

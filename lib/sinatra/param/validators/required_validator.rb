@@ -3,7 +3,7 @@ module Sinatra
     class RequiredValidator < Validator
       IDENTIFIER = :required
 
-      def self.validate(name, value, type, options)
+      def self.validate(name, value, _type, options)
         raise InvalidParameterError, %(Parameter #{name} is required and cannot be blank) if options[:required] && value.blank?
       end
     end
