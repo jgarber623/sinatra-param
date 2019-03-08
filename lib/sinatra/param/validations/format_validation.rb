@@ -1,6 +1,6 @@
 module Sinatra
   module Param
-    class FormatValidator < Validator
+    class FormatValidation < Validation
       IDENTIFIER = :format
 
       def self.validate(_name, value, type, options)

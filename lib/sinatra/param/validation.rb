@@ -1,6 +1,6 @@
 module Sinatra
   module Param
-    class Validator
+    class Validation
       class << self
         def inherited(base)
           subclasses << base
@@ -13,7 +13,7 @@ module Sinatra
         end
 
         def supported_validations
-          @supported_validations ||= subclasses.map { |validator| validator::IDENTIFIER }.sort
+          @supported_validations ||= subclasses.map { |validation| validation::IDENTIFIER }.sort
         end
       end
     end

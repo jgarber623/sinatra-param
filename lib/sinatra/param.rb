@@ -4,7 +4,7 @@ require 'sinatra/base'
 require 'sinatra/param/version'
 require 'sinatra/param/error'
 require 'sinatra/param/type_convertor'
-require 'sinatra/param/validator'
+require 'sinatra/param/validation'
 
 require 'sinatra/param/type_convertors/array_type_convertor'
 require 'sinatra/param/type_convertors/boolean_type_convertor'
@@ -12,8 +12,8 @@ require 'sinatra/param/type_convertors/float_type_convertor'
 require 'sinatra/param/type_convertors/integer_type_convertor'
 require 'sinatra/param/type_convertors/string_type_convertor'
 
-require 'sinatra/param/validators/format_validator'
-require 'sinatra/param/validators/required_validator'
+require 'sinatra/param/validations/format_validation'
+require 'sinatra/param/validations/required_validation'
 
 module Sinatra
   module Param
@@ -25,7 +25,7 @@ module Sinatra
       params[name] = apply_default(params[name], options[:default])
       params[name] = convertor_for_type(type).convert(params[name], options)
 
-      validators_for_param(options).each { |validator| validator.validate(name, params[name], type, options) }
+      validations_for_param(options).each { |validation| validation.validate(name, params[name], type, options) }
     rescue InvalidParameterError => exception
       handle_exception(exception, options)
     end
@@ -71,8 +71,8 @@ module Sinatra
       raise ArgumentError, "type must be one of #{TypeConvertor.supported_types} (given :#{type})" unless TypeConvertor.supported_types.include?(type)
     end
 
-    def validators_for_param(options)
-      Validator.subclasses.find_all { |validator| options.key?(validator::IDENTIFIER) }
+    def validations_for_param(options)
+      Validation.subclasses.find_all { |validation| options.key?(validation::IDENTIFIER) }
     end
   end
 

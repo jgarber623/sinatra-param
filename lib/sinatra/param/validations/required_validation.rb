@@ -1,6 +1,6 @@
 module Sinatra
   module Param
-    class RequiredValidator < Validator
+    class RequiredValidation < Validation
       IDENTIFIER = :required
 
       def self.validate(name, value, _type, options)
