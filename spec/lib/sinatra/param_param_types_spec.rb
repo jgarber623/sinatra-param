@@ -19,6 +19,16 @@ describe Sinatra::Param, :param do
         json params
       end
 
+      get '/boolean' do
+        param :foo, :boolean
+
+        json params
+      end
+
+      get '/boolean/raise' do
+        param :foo, :boolean, raise: true
+      end
+
       get '/float' do
         param :foo, :float
 
@@ -71,6 +81,29 @@ describe Sinatra::Param, :param do
         expect(last_response.status).to eq(200)
         expect(last_response.body).to eq({ foo: %w[bar biz baz] }.to_json)
       end
+    end
+  end
+
+  context 'when parameter type is Boolean' do
+    let(:message) { 'Parameter value "bar" must be a Boolean' }
+    let(:full_message) { "InvalidParameterError: #{message}" }
+
+    it 'raises an InvalidParameterError' do
+      expect { get '/boolean/raise', foo: 'bar' }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+    end
+
+    it 'halts with a 400 HTTP response code and a JSON response body' do
+      get '/boolean', foo: 'bar'
+
+      expect(last_response.status).to eq(400)
+      expect(last_response.body).to eq({ message: full_message }.to_json)
+    end
+
+    it 'returns a 200 HTTP response code and a JSON response body when given a String' do
+      get '/boolean', foo: 'false'
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to eq({ foo: false }.to_json)
     end
   end
 

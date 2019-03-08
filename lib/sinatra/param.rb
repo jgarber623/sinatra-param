@@ -7,6 +7,7 @@ require 'sinatra/param/type_convertor'
 require 'sinatra/param/validator'
 
 require 'sinatra/param/type_convertors/array_type_convertor'
+require 'sinatra/param/type_convertors/boolean_type_convertor'
 require 'sinatra/param/type_convertors/float_type_convertor'
 require 'sinatra/param/type_convertors/integer_type_convertor'
 require 'sinatra/param/type_convertors/string_type_convertor'

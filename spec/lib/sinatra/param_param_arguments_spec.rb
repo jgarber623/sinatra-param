@@ -31,7 +31,7 @@ describe Sinatra::Param, :param do
     end
 
     it 'raises an ArgumentError when type is unsupported' do
-      message = 'type must be one of [:array, :float, :integer, :string] (given :bar)'
+      message = 'type must be one of [:array, :boolean, :float, :integer, :string] (given :bar)'
 
       expect { get '/arguments/invalid/unsupported_type' }.to raise_error(Sinatra::Param::ArgumentError, message)
     end
