@@ -1,14 +1,18 @@
 module Sinatra
   module Param
     class IntegerCoercion < Coercion
-      IDENTIFIER = :integer
+      class << self
+        def coerce(value, **_options)
+          return value if value.is_a?(Integer)
 
-      def self.coerce(value, **_options)
-        return value if value.is_a?(Integer)
+          Integer(value)
+        rescue ::ArgumentError
+          raise InvalidParameterError, %(Parameter value "#{value}" must be an Integer)
+        end
 
-        Integer(value)
-      rescue ::ArgumentError
-        raise InvalidParameterError, %(Parameter value "#{value}" must be an Integer)
+        def identifier
+          @identifier ||= :integer
+        end
       end
     end
   end

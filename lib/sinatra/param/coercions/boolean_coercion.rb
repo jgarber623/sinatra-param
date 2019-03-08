@@ -1,15 +1,19 @@
 module Sinatra
   module Param
     class BooleanCoercion < Coercion
-      IDENTIFIER = :boolean
+      class << self
+        def coerce(value, **_options)
+          return value if [TrueClass, FalseClass].include?(value.class)
 
-      def self.coerce(value, **_options)
-        return value if [TrueClass, FalseClass].include?(value.class)
+          return false if %w[false no 0].include?(value)
+          return true if %w[true yes 1].include?(value)
 
-        return false if %w[false no 0].include?(value)
-        return true if %w[true yes 1].include?(value)
+          raise InvalidParameterError, %(Parameter value "#{value}" must be a Boolean)
+        end
 
-        raise InvalidParameterError, %(Parameter value "#{value}" must be a Boolean)
+        def identifier
+          @identifier ||= :boolean
+        end
       end
     end
   end

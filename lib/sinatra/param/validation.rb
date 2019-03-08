@@ -3,11 +3,11 @@ module Sinatra
     class Validation
       class << self
         def for_param(options)
-          subclasses.find_all { |validation| options.key?(validation::IDENTIFIER) }
+          subclasses.find_all { |validation| options.key?(validation.identifier) }
         end
 
         def supported_validations
-          @supported_validations ||= subclasses.map { |validation| validation::IDENTIFIER }.sort
+          @supported_validations ||= subclasses.map(&:identifier).sort
         end
       end
     end

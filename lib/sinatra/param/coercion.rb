@@ -3,11 +3,11 @@ module Sinatra
     class Coercion
       class << self
         def for_type(type)
-          subclasses.find { |coercion| coercion::IDENTIFIER == type }
+          subclasses.find { |coercion| coercion.identifier == type }
         end
 
         def supported_coercions
-          @supported_coercions ||= subclasses.map { |subclass| subclass::IDENTIFIER }.sort
+          @supported_coercions ||= subclasses.map(&:identifier).sort
         end
       end
     end

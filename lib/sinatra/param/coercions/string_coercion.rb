@@ -1,12 +1,16 @@
 module Sinatra
   module Param
     class StringCoercion < Coercion
-      IDENTIFIER = :string
+      class << self
+        def coerce(value, **_options)
+          return value if value.is_a?(String)
 
-      def self.coerce(value, **_options)
-        return value if value.is_a?(String)
+          value.to_s
+        end
 
-        value.to_s
+        def identifier
+          @identifier ||= :string
+        end
       end
     end
   end

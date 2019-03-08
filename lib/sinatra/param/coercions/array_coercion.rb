@@ -1,12 +1,16 @@
 module Sinatra
   module Param
     class ArrayCoercion < Coercion
-      IDENTIFIER = :array
+      class << self
+        def coerce(value, **options)
+          return value if value.is_a?(Array)
 
-      def self.coerce(value, **options)
-        return value if value.is_a?(Array)
+          value.split(options.fetch(:delimiter, ','))
+        end
 
-        value.split(options.fetch(:delimiter, ','))
+        def identifier
+          @identifier ||= :array
+        end
       end
     end
   end
