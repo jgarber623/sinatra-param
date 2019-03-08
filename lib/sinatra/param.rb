@@ -3,14 +3,14 @@ require 'sinatra/base'
 
 require 'sinatra/param/version'
 require 'sinatra/param/error'
-require 'sinatra/param/type_convertor'
+require 'sinatra/param/coercion'
 require 'sinatra/param/validation'
 
-require 'sinatra/param/type_convertors/array_type_convertor'
-require 'sinatra/param/type_convertors/boolean_type_convertor'
-require 'sinatra/param/type_convertors/float_type_convertor'
-require 'sinatra/param/type_convertors/integer_type_convertor'
-require 'sinatra/param/type_convertors/string_type_convertor'
+require 'sinatra/param/coercions/array_coercion'
+require 'sinatra/param/coercions/boolean_coercion'
+require 'sinatra/param/coercions/float_coercion'
+require 'sinatra/param/coercions/integer_coercion'
+require 'sinatra/param/coercions/string_coercion'
 
 require 'sinatra/param/validations/format_validation'
 require 'sinatra/param/validations/required_validation'
@@ -23,7 +23,7 @@ module Sinatra
       return unless params.include?(name) || options[:default] || options[:required]
 
       params[name] = apply_default(params[name], options[:default])
-      params[name] = convertor_for_type(type).convert(params[name], options)
+      params[name] = coercion_for_type(type).coerce(params[name], options)
 
       validations_for_param(options).each { |validation| validation.validate(name, params[name], type, options) }
     rescue InvalidParameterError => exception
@@ -50,8 +50,8 @@ module Sinatra
       default.respond_to?(:call) ? default.call : default
     end
 
-    def convertor_for_type(type)
-      TypeConvertor.subclasses.find { |convertor| convertor::IDENTIFIER == type }
+    def coercion_for_type(type)
+      Coercion.subclasses.find { |coercion| coercion::IDENTIFIER == type }
     end
 
     def handle_exception(exception, options)
@@ -68,7 +68,7 @@ module Sinatra
     def validate_arguments(name, type)
       raise ArgumentError, "name must be a Symbol (given #{name.class})" unless name.is_a?(Symbol)
       raise ArgumentError, "type must be a Symbol (given #{type.class})" unless type.is_a?(Symbol)
-      raise ArgumentError, "type must be one of #{TypeConvertor.supported_types} (given :#{type})" unless TypeConvertor.supported_types.include?(type)
+      raise ArgumentError, "type must be one of #{Coercion.supported_coercions} (given :#{type})" unless Coercion.supported_coercions.include?(type)
     end
 
     def validations_for_param(options)

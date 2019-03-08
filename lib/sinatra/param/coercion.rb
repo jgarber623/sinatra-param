@@ -1,6 +1,6 @@
 module Sinatra
   module Param
-    class TypeConvertor
+    class Coercion
       class << self
         def inherited(base)
           subclasses << base
@@ -12,8 +12,8 @@ module Sinatra
           @subclasses ||= []
         end
 
-        def supported_types
-          @supported_types ||= subclasses.map { |subclass| subclass::IDENTIFIER }.sort
+        def supported_coercions
+          @supported_coercions ||= subclasses.map { |subclass| subclass::IDENTIFIER }.sort
         end
       end
     end

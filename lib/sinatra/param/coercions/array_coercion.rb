@@ -1,9 +1,9 @@
 module Sinatra
   module Param
-    class ArrayTypeConvertor < TypeConvertor
+    class ArrayCoercion < Coercion
       IDENTIFIER = :array
 
-      def self.convert(value, **options)
+      def self.coerce(value, **options)
         return value if value.is_a?(Array)
 
         value.split(options.fetch(:delimiter, ','))

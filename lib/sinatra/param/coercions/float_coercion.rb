@@ -1,9 +1,9 @@
 module Sinatra
   module Param
-    class FloatTypeConvertor < TypeConvertor
+    class FloatCoercion < Coercion
       IDENTIFIER = :float
 
-      def self.convert(value, **_options)
+      def self.coerce(value, **_options)
         return value if value.is_a?(Float)
 
         Float(value)

@@ -1,9 +1,9 @@
 module Sinatra
   module Param
-    class StringTypeConvertor < TypeConvertor
+    class StringCoercion < Coercion
       IDENTIFIER = :string
 
-      def self.convert(value, **_options)
+      def self.coerce(value, **_options)
         return value if value.is_a?(String)
 
         value.to_s

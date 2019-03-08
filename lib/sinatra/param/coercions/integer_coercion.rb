@@ -1,9 +1,9 @@
 module Sinatra
   module Param
-    class IntegerTypeConvertor < TypeConvertor
+    class IntegerCoercion < Coercion
       IDENTIFIER = :integer
 
-      def self.convert(value, **_options)
+      def self.coerce(value, **_options)
         return value if value.is_a?(Integer)
 
         Integer(value)

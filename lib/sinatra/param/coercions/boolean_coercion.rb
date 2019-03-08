@@ -1,9 +1,9 @@
 module Sinatra
   module Param
-    class BooleanTypeConvertor < TypeConvertor
+    class BooleanCoercion < Coercion
       IDENTIFIER = :boolean
 
-      def self.convert(value, **_options)
+      def self.coerce(value, **_options)
         return value if [TrueClass, FalseClass].include?(value.class)
 
         return false if %w[false no 0].include?(value)
