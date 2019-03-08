@@ -2,14 +2,8 @@ module Sinatra
   module Param
     class Coercion
       class << self
-        def inherited(base)
-          subclasses << base
-
-          super(base)
-        end
-
-        def subclasses
-          @subclasses ||= []
+        def for_type(type)
+          subclasses.find { |coercion| coercion::IDENTIFIER == type }
         end
 
         def supported_coercions

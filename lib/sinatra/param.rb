@@ -1,3 +1,4 @@
+require 'active_support/core_ext/class/subclasses'
 require 'active_support/core_ext/object/blank'
 require 'sinatra/base'
 
@@ -23,9 +24,9 @@ module Sinatra
       return unless params.include?(name) || options[:default] || options[:required]
 
       params[name] = apply_default(params[name], options[:default])
-      params[name] = coercion_for_type(type).coerce(params[name], options)
+      params[name] = Coercion.for_type(type).coerce(params[name], options)
 
-      validations_for_param(options).each { |validation| validation.validate(name, params[name], type, options) }
+      Validation.for_param(options).each { |validation| validation.validate(name, params[name], type, options) }
     rescue InvalidParameterError => exception
       handle_exception(exception, options)
     end
@@ -50,10 +51,6 @@ module Sinatra
       default.respond_to?(:call) ? default.call : default
     end
 
-    def coercion_for_type(type)
-      Coercion.subclasses.find { |coercion| coercion::IDENTIFIER == type }
-    end
-
     def handle_exception(exception, options)
       raise exception if options[:raise]
 
@@ -69,10 +66,6 @@ module Sinatra
       raise ArgumentError, "name must be a Symbol (given #{name.class})" unless name.is_a?(Symbol)
       raise ArgumentError, "type must be a Symbol (given #{type.class})" unless type.is_a?(Symbol)
       raise ArgumentError, "type must be one of #{Coercion.supported_coercions} (given :#{type})" unless Coercion.supported_coercions.include?(type)
-    end
-
-    def validations_for_param(options)
-      Validation.subclasses.find_all { |validation| options.key?(validation::IDENTIFIER) }
     end
   end
 
