@@ -17,9 +17,7 @@ require 'sinatra/param/validators/required_validator'
 module Sinatra
   module Param
     def param(name, type = :string, **options)
-      raise ArgumentError, "name must be a Symbol (given #{name.class})" unless name.is_a?(Symbol)
-      raise ArgumentError, "type must be a Symbol (given #{type.class})" unless type.is_a?(Symbol)
-      raise ArgumentError, "type must be one of #{TypeConvertor.supported_types} (given :#{type})" unless TypeConvertor.supported_types.include?(type)
+      validate_arguments(name, type)
 
       return unless params.include?(name) || options[:default] || options[:required]
 
@@ -64,6 +62,12 @@ module Sinatra
       response_body = { message: message }.to_json if content_type&.match(mime_type(:json))
 
       halt 400, response_body
+    end
+
+    def validate_arguments(name, type)
+      raise ArgumentError, "name must be a Symbol (given #{name.class})" unless name.is_a?(Symbol)
+      raise ArgumentError, "type must be a Symbol (given #{type.class})" unless type.is_a?(Symbol)
+      raise ArgumentError, "type must be one of #{TypeConvertor.supported_types} (given :#{type})" unless TypeConvertor.supported_types.include?(type)
     end
 
     def validators_for_param(options)
