@@ -13,6 +13,20 @@ describe Sinatra::Param, :param do
         json params
       end
 
+      get '/in' do
+        param :foo, :string, in: %w[a b]
+
+        json params
+      end
+
+      get '/in/invalid/in' do
+        param :foo, :string, in: 'a', raise: true
+      end
+
+      get '/in/raise' do
+        param :foo, :string, in: %w[a b], raise: true
+      end
+
       get '/format/invalid/format' do
         param :foo, :string, format: 1, raise: true
       end
@@ -34,6 +48,33 @@ describe Sinatra::Param, :param do
       get '/required/raise' do
         param :foo, :string, raise: true, required: true
       end
+    end
+  end
+
+  context 'when parameter must be in an array' do
+    let(:message) { 'Parameter value "bar" must be in [a, b]' }
+    let(:full_message) { "InvalidParameterError: #{message}" }
+
+    it 'raises an ArgumentError when in is not an Array' do
+      expect { get '/in/invalid/in', foo: 'bar' }.to raise_error(Sinatra::Param::ArgumentError, 'in must be an Array (given String)')
+    end
+
+    it 'raises an InvalidParameterError' do
+      expect { get '/in/raise', foo: 'bar' }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+    end
+
+    it 'halts with a 400 HTTP response and a JSON response body' do
+      get '/in', foo: 'bar'
+
+      expect(last_response.status).to eq(400)
+      expect(last_response.body).to eq({ message: full_message }.to_json)
+    end
+
+    it 'returns a 200 HTTP response code and a JSON response body' do
+      get '/in', foo: 'a'
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to eq({ foo: 'a' }.to_json)
     end
   end
 

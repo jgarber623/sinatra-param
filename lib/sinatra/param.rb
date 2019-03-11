@@ -13,6 +13,7 @@ require 'sinatra/param/coercions/float_coercion'
 require 'sinatra/param/coercions/integer_coercion'
 require 'sinatra/param/coercions/string_coercion'
 
+require 'sinatra/param/validations/in_validation'
 require 'sinatra/param/validations/format_validation'
 require 'sinatra/param/validations/required_validation'
 
