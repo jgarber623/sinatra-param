@@ -20,6 +20,7 @@ require 'sinatra/param/validations/within_validation'
 
 module Sinatra
   module Param
+    # rubocop:disable Metrics/AbcSize
     def param(name, type = :string, **options)
       validate_arguments(name, type)
 
@@ -33,6 +34,7 @@ module Sinatra
     rescue InvalidParameterError => exception
       handle_exception(exception, options)
     end
+    # rubocop:enable Metrics/AbcSize
 
     def one_of(*names, **options)
       raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" if names.count { |name| params[name].present? } > 1
