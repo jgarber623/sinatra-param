@@ -27,6 +27,7 @@ module Sinatra
 
       params[name] = apply_default(params[name], options[:default])
       params[name] = Coercion.for_type(type).coerce(params[name], options)
+      params[name] = apply_transform(params[name], options[:transform])
 
       Validation.for_param(options).each { |validation| validation.validate(name, params[name], type, options) }
     rescue InvalidParameterError => exception
@@ -51,6 +52,14 @@ module Sinatra
       return value unless value.blank? && default.present?
 
       default.respond_to?(:call) ? default.call : default
+    end
+
+    def apply_transform(value, transform)
+      return value unless transform.present?
+
+      raise ArgumentError, "transform must be a Proc or Symbol (given #{transform.class})" unless [Proc, Symbol].include?(transform.class)
+
+      transform.to_proc.call(value)
     end
 
     def handle_exception(exception, options)

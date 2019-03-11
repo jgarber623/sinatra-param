@@ -18,6 +18,18 @@ describe Sinatra::Param, :param do
 
         json params
       end
+
+      get '/transform' do
+        param :foo, :string, transform: :upcase
+
+        json params
+      end
+
+      get '/transform/proc' do
+        param :foo, :string, transform: ->(p) { p.upcase.reverse }
+
+        json params
+      end
     end
   end
 
@@ -44,6 +56,26 @@ describe Sinatra::Param, :param do
 
         expect(last_response.status).to eq(200)
         expect(last_response.body).to eq({ foo: 'bar' }.to_json)
+      end
+    end
+  end
+
+  context 'when parameter has a transform' do
+    context 'when transform is a Symbol' do
+      it 'returns a 200 HTTP response code and a JSON response body' do
+        get '/transform', foo: 'bar'
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to eq({ foo: 'BAR' }.to_json)
+      end
+    end
+
+    context 'when transform is a Proc' do
+      it 'returns a 200 HTTP response code and a JSON response body' do
+        get '/transform/proc', foo: 'bar'
+
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to eq({ foo: 'RAB' }.to_json)
       end
     end
   end
