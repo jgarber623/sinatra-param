@@ -6,7 +6,7 @@ module Sinatra
           @identifier ||= :within
         end
 
-        def validate(name, value, type, options)
+        def validate(_name, value, _type, options)
           values = options[:within]
 
           raise ArgumentError, %(within must be a Range (given #{values.class})) unless values.is_a?(Range)
