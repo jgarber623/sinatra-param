@@ -48,6 +48,20 @@ describe Sinatra::Param, :param do
       get '/required/raise' do
         param :foo, :string, raise: true, required: true
       end
+
+      get '/within' do
+        param :foo, :integer, within: (1..10)
+
+        json params
+      end
+
+      get '/within/invalid/within' do
+        param :foo, :integer, within: 'a', raise: true
+      end
+
+      get '/within/raise' do
+        param :foo, :integer, within: (1..10), raise: true
+      end
     end
   end
 
@@ -136,6 +150,33 @@ describe Sinatra::Param, :param do
 
       expect(last_response.status).to eq(200)
       expect(last_response.body).to eq({ foo: 'bar' }.to_json)
+    end
+  end
+
+  context 'when parameter must be within a range' do
+    let(:message) { 'Parameter value "50" must be within 1 and 10' }
+    let(:full_message) { "InvalidParameterError: #{message}" }
+
+    it 'raises an ArgumentError when in is not an Array' do
+      expect { get '/within/invalid/within', foo: 50 }.to raise_error(Sinatra::Param::ArgumentError, 'within must be a Range (given String)')
+    end
+
+    it 'raises an InvalidParameterError' do
+      expect { get '/within/raise', foo: 50 }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+    end
+
+    it 'halts with a 400 HTTP response and a JSON response body' do
+      get '/within', foo: 50
+
+      expect(last_response.status).to eq(400)
+      expect(last_response.body).to eq({ message: full_message }.to_json)
+    end
+
+    it 'returns a 200 HTTP response code and a JSON response body' do
+      get '/within', foo: 5
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to eq({ foo: 5 }.to_json)
     end
   end
 end
