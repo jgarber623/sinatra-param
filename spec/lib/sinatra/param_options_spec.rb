@@ -25,6 +25,14 @@ describe Sinatra::Param, :param do
         json params
       end
 
+      get '/transform/invalid/method' do
+        param :foo, :string, raise: true, transform: :bar
+      end
+
+      get '/transform/invalid/type' do
+        param :foo, :string, raise: true, transform: 'upcase'
+      end
+
       get '/transform/proc' do
         param :foo, :string, transform: ->(p) { p.upcase.reverse }
 
@@ -61,6 +69,18 @@ describe Sinatra::Param, :param do
   end
 
   context 'when parameter has a transform' do
+    context 'when transform is an invalid method' do
+      it 'raises an ArgumentError' do
+        expect { get '/transform/invalid/method', foo: 'bar' }.to raise_error(Sinatra::Param::ArgumentError, 'transform ":bar" does not exist for value of type String')
+      end
+    end
+
+    context 'when transform is an invalid type' do
+      it 'raises an ArgumentError' do
+        expect { get '/transform/invalid/type', foo: 'bar' }.to raise_error(Sinatra::Param::ArgumentError, 'transform must be a Proc or Symbol (given String)')
+      end
+    end
+
     context 'when transform is a Symbol' do
       it 'returns a 200 HTTP response code and a JSON response body' do
         get '/transform', foo: 'bar'

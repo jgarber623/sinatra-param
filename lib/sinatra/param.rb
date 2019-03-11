@@ -60,6 +60,8 @@ module Sinatra
       raise ArgumentError, "transform must be a Proc or Symbol (given #{transform.class})" unless [Proc, Symbol].include?(transform.class)
 
       transform.to_proc.call(value)
+    rescue NoMethodError
+      raise ArgumentError, %(transform ":#{transform}" does not exist for value of type #{value.class})
     end
 
     def handle_exception(exception, options)
