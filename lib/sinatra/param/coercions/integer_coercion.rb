@@ -5,7 +5,7 @@ module Sinatra
         def coerce(value, **_options)
           return value if value.is_a?(Integer)
 
-          Integer(value)
+          Integer(value, 10)
         rescue ::ArgumentError
           raise InvalidParameterError, %(Parameter value "#{value}" must be an Integer)
         end
