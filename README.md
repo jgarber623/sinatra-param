@@ -129,7 +129,7 @@ sinatra-param supports the following parameter validations:
 
 ### Defaults
 
-Parmeter defaults may be set using the `default` option:
+Parameter defaults may be set using the `default` option:
 
 ```ruby
 param :taken_in, :integer, default: 2019
