@@ -223,7 +223,7 @@ This project is a fork of [sinatra-param](https://github.com/mattt/sinatra-param
 The following projects work well in conjunction with sinatra-param:
 
 - [sinatra-contrib](https://github.com/sinatra/sinatra/tree/master/sinatra-contrib) ([documentation](http://sinatrarb.com/contrib/))
-- [rack-contrib](https://github.com/rack/rack-contrib) (`Rack::NestedParams` and `Rack::PostBodyContentTypeParser` in particular)
+- [rack-contrib](https://github.com/rack/rack-contrib) ([`Rack::NestedParams`](https://github.com/rack/rack-contrib/blob/master/lib/rack/contrib/nested_params.rb) and [`Rack::PostBodyContentTypeParser`](https://github.com/rack/rack-contrib/blob/master/lib/rack/contrib/post_body_content_type_parser.rb) in particular)
 
 ## License
 
