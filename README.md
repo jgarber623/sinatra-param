@@ -1,37 +1,60 @@
 # sinatra-param
 
-_Parameter Validation & Type Coercion for Sinatra_
+**Parameter Validation, Transformation, and Type Coercion for [Sinatra](http://sinatrarb.com) applications.**
 
-REST conventions take the guesswork out of designing and consuming web APIs. Simply `GET`, `POST`, `PATCH`, or `DELETE` resource endpoints, and you get what you'd expect.
+[![Build](https://img.shields.io/travis/com/jgarber623/sinatra-param/master.svg?style=for-the-badge)](https://travis-ci.com/jgarber623/sinatra-param)
+[![Dependencies](https://img.shields.io/depfu/jgarber623/sinatra-param.svg?style=for-the-badge)](https://depfu.com/github/jgarber623/sinatra-param)
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param)
+[![Coverage](https://img.shields.io/codeclimate/c/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param/code)
 
-However, when it comes to figuring out what parameters are expected... well, all bets are off.
+sinatra-param adds useful helpers to your Sinatra application, allowing you to declare, validate, and transform URL endpoint parameters. By default, Sinatra route parameters are exposed to your application as strings which may then be coerced to more useful classes as needed. sinatra-param smooths over the rough edges and takes care of type coercion and parameter validation on your behalf.
 
-This Sinatra extension takes a first step to solving this problem on the developer side
+## Key Features
 
-**`sinatra-param` allows you to declare, validate, and transform endpoint parameters as you would in frameworks like [ActiveModel](http://rubydoc.info/gems/activemodel/3.2.3/frames) or [DataMapper](http://datamapper.org/).**
+- Provides `param` helper for defining, transforming, and validating parameters.
+- Provides `any_of` and `one_of` helpers for advanced parameter validations.
+- Supports Ruby 2.4 and newer.
 
-> Use `sinatra-param` in combination with [`Rack::PostBodyContentTypeParser` and `Rack::NestedParams`](https://github.com/rack/rack-contrib) to automatically parameterize JSON `POST` bodies and nested parameters.
+## Getting Started
 
-## Install
+Before installing and using sinatra-param, you'll want to have [Ruby](https://www.ruby-lang.org) 2.4 (or newer) installed. It's recommended that you use a Ruby version managment tool like [rbenv](https://github.com/rbenv/rbenv), [chruby](https://github.com/postmodern/chruby), or [rvm](https://github.com/rvm/rvm).
 
-You can install `sinatra-param` from the command line with the following:
+sinatra-param is developed using Ruby 2.4.5 and is additionally tested against Ruby 2.5.3 and 2.6.1 using [Travis CI](https://travis-ci.com/jgarber623/sinatra-param).
 
-```bash
-$ gem install sinatra-param
-```
+## Installation
 
-Alternatively, you can specify `sinatra-param` as a dependency in your `Gemfile` and run `$ bundle install`:
+If you're using [Bundler](https://bundler.io), add sinatra-param to your project's `Gemfile`:
 
 ```ruby
-gem "sinatra-param", require: "sinatra/param"
+source 'https://rubygems.org'
+
+gem 'sinatra-param', git: 'https://github.com/jgarber623/sinatra-param', tag: 'v2.0.0'
 ```
 
-## Example
+If you're using Bundler 2.0, you may simplify the `Gemfile` line to:
+
+```ruby
+gem 'sinatra-param', github: 'jgarber623/sinatra-param', tag: 'v2.0.0'
+```
+
+Hop over to your command prompt and run:
+
+```sh
+$ bundle install
+```
+
+## Usage
+
+The `param` helper takes three arguments: `name` (a `Symbol`), `type` (a `Symbol`), and zero or more `options` (a Hash). The `options` hash may include a number of transformations, validations, or other configuration as mentioned in this documentation.
+
+The `name` argument should match the values you expect your Sinatra application's endpoints to receive (Sinatra's `params` is an [IndifferentHash](https://github.com/sinatra/sinatra/blob/master/lib/sinatra/indifferent_hash.rb) whose keys may be referenced as either `Symbol`s or `String`s).
+
+In your project's `app.rb` file:
 
 ```ruby
 require 'sinatra/base'
+require 'sinatra/json'
 require 'sinatra/param'
-require 'json'
 
 class App < Sinatra::Base
   helpers Sinatra::Param
@@ -40,132 +63,168 @@ class App < Sinatra::Base
     content_type :json
   end
 
-  # GET /search?q=example
-  # GET /search?q=example&categories=news
-  # GET /search?q=example&sort=created_at&order=ASC
+  # GET /search?user=@jgarber
+  # GET /search?user=@jgarber&attributes=first_name,email_address,url
   get '/search' do
-    param :q,           String, required: true
-    param :categories,  Array
-    param :sort,        String, default: "title"
-    param :order,       String, in: ["ASC", "DESC"], transform: :upcase, default: "ASC"
-    param :price,       String, format: /[<\=>]\s*\$\d+/
+    param :user,       :string, format: %r{^@\w+}, required: true
+    param :attributes, :array,  default: ['first_name', 'last_name']
 
-    one_of :q, :categories
+    json { status: 'OK', … }
+  end
 
-    {...}.to_json
+  # GET /articles?page=5
+  # GET /articles?page=5&order=desc
+  get '/articles' do
+    param :page,  :integer, default: 1
+    param :order, :string,  default: 'ASC', in: ['ASC', 'DESC'], transform: :upcase
+
+    json { status: 'OK', … }
+  end
+
+  # /photos?include_drafts=true
+  # /photos?taken_in=2015
+  get '/photos' do
+    param :include_drafts, :boolean, default: false
+    param :taken_in,       :integer, within: Range.new(2000, 2019)
+
+    json { status: 'OK', … }
   end
 end
 ```
 
 ### Parameter Types
 
-By declaring parameter types, incoming parameters will automatically be transformed into an object of that type. For instance, if a param is `Boolean`, values of `'1'`, `'true'`, `'t'`, `'yes'`, and `'y'` will be automatically transformed into `true`.
+sinatra-param supports the following parameter types:
 
-* `String`
-* `Integer`
-* `Float`
-* `Boolean` _("1/0", "true/false", "t/f", "yes/no", "y/n")_
-* `Array` _("1,2,3,4,5")_
-* `Hash` _(key1:value1,key2:value2)_
-* `Date`, `Time`, & `DateTime`
+| Type       | Class        | Matches            | Options/Defaults           |
+|:-----------|:-------------|:-------------------|:---------------------------|
+| `:string`  | `String`     | `foo`, `bar`       |                            |
+| `:array`   | `Array`      | `foo,bar,biz,baz`  | `delimiter: ','`           |
+| `:boolean` | `TrueClass`  | `true`, `yes`, `1` |                            |
+|            | `FalseClass` | `false`, `no`, `0` |                            |
+| `:integer` | `Integer`    | `1`, `500`, `1000` |                            |
+| `:float`   | `Float`      | `38.89`, `-77.03`  |                            |
+
+By default, `:array` parameters are comma-separated. This behavior may be customized using the `delimiter` option:
+
+```ruby
+# GET /search?categories=foo|bar|biz|baz
+get '/search' do
+  param :categories, :array, delimiter: '|'
+
+  puts categories # => ['foo', 'bar', 'biz', 'baz']
+end
+```
 
 ### Validations
 
-Encapsulate business logic in a consistent way with validations. If a parameter does not satisfy a particular condition, a `400` error is returned with a message explaining the failure.
+sinatra-param supports the following parameter validations:
 
-* `required`
-* `blank`
-* `is`
-* `in`, `within`, `range`
-* `min` / `max`
-* `min_length` / `max_length`
-* `format`
+| Name       | Value Class                 | Usage                    |
+|:-----------|:----------------------------|:-------------------------|
+| `required` | `TrueClass` or `FalseClass` | `required: true`         |
+| `format`   | `RegExp`                    | `format: %r{^https?://}` |
+| `in`       | `Array`                     | `in: ['ASC', 'DESC']`    |
+| `within`   | `Range`                     | `within: (A..Z)`         |
 
-### Custom Error Messages
+### Defaults
 
-Passing a `message` option allows you to customize the message
-for any validation error that occurs.
+Parmeter defaults may be set using the `default` option:
 
 ```ruby
-param :spelling,
-      format: /\b(?![a-z]*cie)[a-z]*(?:cei|ie)[a-z]*/i,
-      message: "'i' before 'e', except after 'c'"
+param :taken_in, :integer, default: 2019
 ```
 
-### Defaults and Transformations
-
-Passing a `default` option will provide a default value for a parameter if none is passed. A `default` can defined as either a default or as a `Proc`:
+The `default` option's value can be anything (but should probably match the parameter type) and may also be declared using a `Proc`:
 
 ```ruby
-param :attribution, String, default: "©"
-param :year, Integer, default: lambda { Time.now.year }
+param :taken_in, :integer, default: -> { Time.now.year }
 ```
 
-Use the `transform` option to take even more of the business logic of parameter I/O out of your code. Anything that responds to `to_proc` (including `Proc` and symbols) will do.
+### Transformations
+
+Transformations may be either a `Symbol` (that maps to a method on the parameter type's underlying Class) or a `Proc`:
 
 ```ruby
-param :order, String, in: ["ASC", "DESC"], transform: :upcase, default: "ASC"
-param :offset, Integer, min: 0, transform: lambda {|n| n - (n % 10)}
+param :order,  :string,  in: ['ASC', 'DESC'], transform: :upcase
+param :offset, :integer, transform: lambda { |n| n - (n % 10) }
 ```
 
-## One Of
+## Additional Helpers
 
-Using `one_of`, routes can specify two or more parameters to be mutually exclusive, and fail if _more than one_ of those parameters is provided:
+### `any_of`
 
-```ruby
-param :a, String
-param :b, String
-param :c, String
-
-one_of :a, :b, :c
-```
-
-## Any Of
-
-Using `any_of`, a route can specify that _at least one of_ two or more parameters are required, and fail if _none of them_ are provided:
+Using the `any_of` helper, you can specify that _at least one of_ a set of paramters are required and fail if none of those parameters are provided:
 
 ```ruby
-param :x, String
-param :y, String
+param :x, :integer
+param :y, :integer
 
 any_of :x, :y
 ```
 
-### Exceptions
+### `one_of`
 
-By default, when a parameter precondition fails, `Sinatra::Param` will `halt 400` with an error message:
+Using the `one_of` helper, you can specify that _only one of_ a set of parameters is required and fail if more than one of those parameters is provided:
+
+```ruby
+param :a, :string
+param :b, :string
+param :c, :string
+
+one_of :a, :b, :c
+```
+
+## Exception Handling
+
+By default, when a parameter condition fails, sinatra-param will `halt` with a 400 HTTP error response code and an error message (as either `text/plain` or `application/json`):
 
 ```json
 {
-  "message": "Parameter must be within [\"ASC\", \"DESC\"]",
-  "errors": {
-    "order": "Parameter must be within [\"ASC\", \"DESC\"]"
-  }
+  "message": "Parameter value \"foo\" must match ^https?://"
 }
 ```
 
-To change this, you can set `:raise_sinatra_param_exceptions` to `true`, and intercept `Sinatra::Param::InvalidParameterError` with a Sinatra `error do...end` block. (To make this work in development, set `:show_exceptions` to `false` and `:raise_errors` to `true`):
+The above would be returned to an end user in response to an HTTP request.
+
+Under the covers, sinatra-param captures one of three types of user-level errors. Each is a subclass of `Sinatra::Param::Error` (which itself subclasses `StandardError`):
+
+- `Sinatra::Param::InvalidParameterError`
+- `Sinatra::Param::RequiredParameterError` (raised by the `any_of` helper)
+- `Sinatra::Param::TooManyParametersError` (raise by the `one_of` helper)
+
+Additionally, `Sinatra::Param::ArgumentError`s will be raised if implementation errors are encountered (e.g. mismatches between a parameter type and its default value).
+
+If you'd prefer to handle these errors on your own, you can add the `raise: true` option to any `param`, `one_of`, or `any_of` declaration:
 
 ```ruby
-set :raise_sinatra_param_exceptions, true
+param :order,      :string, in: ['ASC', 'DESC'], raise: true
+param :query,      :string
+param :categories, :array
 
-error Sinatra::Param::InvalidParameterError do
-    { error: "#{env['sinatra.error'].param} is invalid" }.to_json
+one_of :query, :categories, raise: true
+```
+
+For this to work in development, you may need to add the following configuration to your Sinatra application:
+
+```ruby
+class App < Sinatra::Base
+  configure do
+    set :raise_errors, true
+	set :show_exceptions, false
+  end
 end
 ```
 
-Custom exception handling can also be enabled on an individual parameter basis, by passing the `raise` option:
+## Acknowledgments
 
-```ruby
-param :order, String, in: ["ASC", "DESC"], raise: true
+This project is a fork of [sinatra-param](https://github.com/mattt/sinatra-param) and wouldn't exist without [Mattt](https://mat.tt). This fork is written and maintained by [Jason Garber](https://sixtwothree.org).
 
-one_of :q, :categories, raise: true
-```
+The following projects work well in conjunction with sinatra-param:
 
-## Contact
-
-Mattt ([@mattt](http://twitter.com/mattt))
+- [sinatra-contrib](https://github.com/sinatra/sinatra/tree/master/sinatra-contrib) ([documentation](http://sinatrarb.com/contrib/))
+- [rack-contrib](https://github.com/rack/rack-contrib) (`Rack::NestedParams` and `Rack::PostBodyContentTypeParser` in particular)
 
 ## License
 
-sinatra-param is released under an MIT license. See LICENSE for more information.
+sinatra-param is freely available under the [MIT License](https://opensource.org/licenses/MIT). Use it, learn from it, fork it, improve it, change it, tailor it to your needs.

@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Mattt', 'Jason Garber']
   spec.email         = ['mattt@me.com', 'jason@sixtwothree.org']
 
-  spec.summary       = 'Parameter Validation and Type Coercion for Sinatra applications.'
-  spec.description   = 'Declare, validate, and transform endpoint parameters in a manner similar to frameworks like ActiveModel or DataMapper.'
+  spec.summary       = 'Parameter Validation, Transformation, and Type Coercion for Sinatra applications.'
+  spec.description   = 'Declare, validate, and transform URL endpoint parameters.'
   spec.homepage      = 'https://github.com/mattt/sinatra-param'
   spec.license       = 'MIT'
 
