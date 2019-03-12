@@ -211,7 +211,7 @@ For this to work in development, you may need to add the following configuration
 class App < Sinatra::Base
   configure do
     set :raise_errors, true
-	set :show_exceptions, false
+    set :show_exceptions, false
   end
 end
 ```
