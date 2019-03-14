@@ -102,10 +102,12 @@ sinatra-param supports the following parameter types:
 | `:array`   | `Array`      | `foo,bar,biz,baz`  | `delimiter: ','`           |
 | `:boolean` | `TrueClass`  | `true`, `yes`, `1` |                            |
 |            | `FalseClass` | `false`, `no`, `0` |                            |
+| `:hash`    | `Hash`       | `foo:bar,biz:baz`  | `delimiter: ','`           |
+|            |              |                    | `separator: ':'`           |
 | `:integer` | `Integer`    | `1`, `500`, `1000` |                            |
 | `:float`   | `Float`      | `38.89`, `-77.03`  |                            |
 
-By default, `:array` parameters are comma-separated. This behavior may be customized using the `delimiter` option:
+By default, `:array` parameters are comma-delimited. This behavior may be customized using the `delimiter` option:
 
 ```ruby
 # GET /search?categories=foo|bar|biz|baz
@@ -115,6 +117,26 @@ get '/search' do
   puts categories # => ['foo', 'bar', 'biz', 'baz']
 end
 ```
+
+Similarly, `:hash` parameters are comma-delimited and key/value pairs are colon-separated by default and may be customized using the `delimiter` and `separator` options:
+
+```ruby
+# GET /search?coordinates=x:1,y:1
+get '/search' do
+  param :coordinates, :hash
+
+  puts coordinates # => { 'x': '1', 'y': '1' }
+end
+
+# GET /search?coordinates=x|1_y|1
+get '/search' do
+  param :coordinates, :hash, delimiter: '_', separator: '|'
+
+  puts coordinates # => { 'x': '1', 'y': '1' }
+end
+```
+
+**Note:** `:hash` parameter types return a `Hash` with keys and values as `String`s. Additional type coercion on elements in the `Hash` should be handled by your application code.
 
 ### Validations
 

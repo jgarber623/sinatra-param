@@ -10,6 +10,7 @@ require 'sinatra/param/validation'
 require 'sinatra/param/coercions/array_coercion'
 require 'sinatra/param/coercions/boolean_coercion'
 require 'sinatra/param/coercions/float_coercion'
+require 'sinatra/param/coercions/hash_coercion'
 require 'sinatra/param/coercions/integer_coercion'
 require 'sinatra/param/coercions/string_coercion'
 
