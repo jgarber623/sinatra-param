@@ -227,7 +227,19 @@ param :categories, :array
 one_of :query, :categories, raise: true
 ```
 
-For this to work in development, you may need to add the following configuration to your Sinatra application:
+You may also globally configure exception handling by setting `:raise_sinatra_param_exceptions` to `true`:
+
+```ruby
+class App < Sinatra::Base
+  configure do
+    set :raise_sinatra_param_exceptions, true
+  end
+
+  …
+end
+```
+
+For this method of exception handling to work in development, you may need to add the following configuration to your application:
 
 ```ruby
 class App < Sinatra::Base
@@ -235,6 +247,8 @@ class App < Sinatra::Base
     set :raise_errors, true
     set :show_exceptions, false
   end
+
+  …
 end
 ```
 

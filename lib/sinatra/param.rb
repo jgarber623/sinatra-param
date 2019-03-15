@@ -68,7 +68,7 @@ module Sinatra
     end
 
     def handle_exception(exception, options)
-      raise exception if options[:raise]
+      raise exception if raise_exception?(options)
 
       message = "#{exception.class.name.split('::').last}: #{exception.message}"
 
@@ -76,6 +76,10 @@ module Sinatra
       response_body = { message: message }.to_json if content_type&.match(mime_type(:json))
 
       halt 400, response_body
+    end
+
+    def raise_exception?(options)
+      options[:raise] || (settings.raise_sinatra_param_exceptions if settings.respond_to?(:raise_sinatra_param_exceptions))
     end
 
     def validate_arguments(name, type)
