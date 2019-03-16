@@ -38,13 +38,13 @@ module Sinatra
     # rubocop:enable Metrics/AbcSize
 
     def one_of(*names, **options)
-      raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" if names.count { |name| params[name].present? } > 1
+      raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" if names_count(names, params) > 1
     rescue TooManyParametersError => exception
       handle_exception(exception, options)
     end
 
     def any_of(*names, **options)
-      raise RequiredParameterError, "At least one of parameters [#{names.join(', ')}] is required" if names.count { |name| params[name].present? } < 1
+      raise RequiredParameterError, "At least one of parameters [#{names.join(', ')}] is required" if names_count(names, params) < 1
     rescue RequiredParameterError => exception
       handle_exception(exception, options)
     end
@@ -76,6 +76,10 @@ module Sinatra
       response_body = { message: message }.to_json if content_type&.match(mime_type(:json))
 
       halt 400, response_body
+    end
+
+    def names_count(names, params)
+      names.count { |name| params[name].present? }
     end
 
     def raise_exception?(options)
