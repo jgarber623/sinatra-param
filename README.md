@@ -179,10 +179,11 @@ param :offset, :integer, transform: lambda { |n| n - (n % 10) }
 Using the `any_of` helper, you can specify that _at least one of_ a set of paramters are required and fail if none of those parameters are provided:
 
 ```ruby
-param :x, :integer
-param :y, :integer
+param :a, :string
+param :b, :string
+param :c, :string
 
-any_of :x, :y
+any_of :a, :b, :c
 ```
 
 ### `one_of`
