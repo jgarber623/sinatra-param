@@ -39,6 +39,42 @@ describe Sinatra::Param, :param do
         param :foo, :string, format: %r{^https?://}, raise: true
       end
 
+      get '/max' do
+        param :foo, :integer, max: 100
+
+        json params
+      end
+
+      get '/max/invalid/max' do
+        param :foo, :integer, max: 'a', raise: true
+      end
+
+      get '/max/invalid/type' do
+        param :foo, :string, max: 100, raise: true
+      end
+
+      get '/max/raise' do
+        param :foo, :integer, max: 100, raise: true
+      end
+
+      get '/min' do
+        param :foo, :integer, min: 100
+
+        json params
+      end
+
+      get '/min/invalid/min' do
+        param :foo, :integer, min: 'a', raise: true
+      end
+
+      get '/min/invalid/type' do
+        param :foo, :string, min: 100, raise: true
+      end
+
+      get '/min/raise' do
+        param :foo, :integer, min: 100, raise: true
+      end
+
       get '/required' do
         param :foo, :string, required: true
 
@@ -120,6 +156,68 @@ describe Sinatra::Param, :param do
 
       expect(last_response.status).to eq(200)
       expect(last_response.body).to eq({ foo: 'https://example.com' }.to_json)
+    end
+  end
+
+  context 'when parameter may be at most a maximum value' do
+    let(:message) { 'Parameter value "500" may be at most 100' }
+    let(:full_message) { "InvalidParameterError: #{message}" }
+
+    it 'raises an ArgumentError when type is not :float or :integer' do
+      expect { get '/max/invalid/type', foo: 500 }.to raise_error(Sinatra::Param::ArgumentError, 'type must be one of [:float, :integer] (given :string)')
+    end
+
+    it 'raises an ArgumentError when min is not a Float or an Integer' do
+      expect { get '/max/invalid/max', foo: 500 }.to raise_error(Sinatra::Param::ArgumentError, 'min must be a Float or an Integer (given String)')
+    end
+
+    it 'raises an InvalidParameterError' do
+      expect { get '/max/raise', foo: 500 }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+    end
+
+    it 'halts with a 400 HTTP response and a JSON response body' do
+      get '/max', foo: 500
+
+      expect(last_response.status).to eq(400)
+      expect(last_response.body).to eq({ message: full_message }.to_json)
+    end
+
+    it 'returns a 200 HTTP response code and a JSON response body' do
+      get '/max', foo: 100
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to eq({ foo: 100 }.to_json)
+    end
+  end
+
+  context 'when parameter must be at least a minimum value' do
+    let(:message) { 'Parameter value "50" must be at least 100' }
+    let(:full_message) { "InvalidParameterError: #{message}" }
+
+    it 'raises an ArgumentError when type is not :float or :integer' do
+      expect { get '/min/invalid/type', foo: 50 }.to raise_error(Sinatra::Param::ArgumentError, 'type must be one of [:float, :integer] (given :string)')
+    end
+
+    it 'raises an ArgumentError when min is not a Float or an Integer' do
+      expect { get '/min/invalid/min', foo: 50 }.to raise_error(Sinatra::Param::ArgumentError, 'min must be a Float or an Integer (given String)')
+    end
+
+    it 'raises an InvalidParameterError' do
+      expect { get '/min/raise', foo: 50 }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+    end
+
+    it 'halts with a 400 HTTP response and a JSON response body' do
+      get '/min', foo: 50
+
+      expect(last_response.status).to eq(400)
+      expect(last_response.body).to eq({ message: full_message }.to_json)
+    end
+
+    it 'returns a 200 HTTP response code and a JSON response body' do
+      get '/min', foo: 100
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to eq({ foo: 100 }.to_json)
     end
   end
 
