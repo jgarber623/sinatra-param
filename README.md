@@ -45,7 +45,7 @@ $ bundle install
 
 ## Usage
 
-The `param` helper takes three arguments: `name` (a `Symbol`), `type` (a `Symbol`), and zero or more `options` (a Hash). The `options` hash may include a number of transformations, validations, or other configuration as mentioned in this documentation.
+The `param` helper takes three arguments: `name` (a `Symbol`), `type` (a `Symbol`), and zero or more `options` (a `Hash`). `options` may include a number of transformations, validations, or other configuration as mentioned in this documentation.
 
 The `name` argument should match the values you expect your Sinatra application's endpoints to receive (Sinatra's `params` is an [IndifferentHash](https://github.com/sinatra/sinatra/blob/master/lib/sinatra/indifferent_hash.rb) whose keys may be referenced as either `Symbol`s or `String`s).
 
@@ -144,9 +144,11 @@ sinatra-param supports the following parameter validations:
 
 | Name       | Value Class                 | Usage                    |
 |:-----------|:----------------------------|:-------------------------|
-| `required` | `TrueClass` or `FalseClass` | `required: true`         |
 | `format`   | `RegExp`                    | `format: %r{^https?://}` |
 | `in`       | `Array`                     | `in: ['ASC', 'DESC']`    |
+| `max`      | `Float` or `Integer`        | `max: 10.5`              |
+| `min`      | `Float` or `Integer`        | `min: 100`               |
+| `required` | `TrueClass` or `FalseClass` | `required: true`         |
 | `within`   | `Range`                     | `within: (A..Z)`         |
 
 ### Defaults
