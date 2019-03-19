@@ -2,7 +2,7 @@ module Sinatra
   module Param
     class FloatCoercion < Coercion
       class << self
-        def coerce(value, **_options)
+        def apply(value, **_options)
           return value if value.is_a?(Float)
 
           Float(value)

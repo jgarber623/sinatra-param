@@ -2,7 +2,7 @@ module Sinatra
   module Param
     class ArrayCoercion < Coercion
       class << self
-        def coerce(value, **options)
+        def apply(value, **options)
           return value if value.is_a?(Array)
 
           value.split(options.fetch(:delimiter, ','))

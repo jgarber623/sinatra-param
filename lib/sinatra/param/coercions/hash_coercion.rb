@@ -2,7 +2,7 @@ module Sinatra
   module Param
     class HashCoercion < Coercion
       class << self
-        def coerce(value, **options)
+        def apply(value, **options)
           delimiter = options.fetch(:delimiter, ',')
           separator = options.fetch(:separator, ':')
 
