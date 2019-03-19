@@ -34,7 +34,7 @@ module Sinatra
       params[name] = Coercion.for_type(type).apply(params[name], options)
       params[name] = Transformation.apply(params[name], options[:transform])
 
-      Validation.for_param(options).each { |validation| validation.validate(name, params[name], type, options) }
+      Validation.for_param(options).each { |validation| validation.apply(name, params[name], type, options) }
     rescue InvalidParameterError => exception
       handle_exception(exception, options)
     end
