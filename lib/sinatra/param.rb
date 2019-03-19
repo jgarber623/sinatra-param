@@ -5,6 +5,7 @@ require 'sinatra/base'
 require 'sinatra/param/version'
 require 'sinatra/param/error'
 require 'sinatra/param/coercion'
+require 'sinatra/param/transformation'
 require 'sinatra/param/validation'
 
 require 'sinatra/param/coercions/array_coercion'
@@ -31,7 +32,7 @@ module Sinatra
 
       params[name] = apply_default(params[name], options[:default])
       params[name] = Coercion.for_type(type).coerce(params[name], options)
-      params[name] = apply_transform(params[name], options[:transform])
+      params[name] = Transformation.apply(params[name], options[:transform])
 
       Validation.for_param(options).each { |validation| validation.validate(name, params[name], type, options) }
     rescue InvalidParameterError => exception
@@ -59,16 +60,6 @@ module Sinatra
       default.respond_to?(:call) ? default.call : default
     end
 
-    def apply_transform(value, transform)
-      return value unless transform.present?
-
-      raise ArgumentError, "transform must be a Proc or Symbol (given #{transform.class})" unless [Proc, Symbol].include?(transform.class)
-
-      transform.to_proc.call(value)
-    rescue NoMethodError
-      raise ArgumentError, %(transform ":#{transform}" does not exist for value of type #{value.class})
-    end
-
     def handle_exception(exception, options)
       raise exception if raise_exception?(options)
 
@@ -89,9 +80,11 @@ module Sinatra
     end
 
     def validate_arguments(name, type)
+      supported_coercions = Coercion.supported_coercions
+
       raise ArgumentError, "name must be a Symbol (given #{name.class})" unless name.is_a?(Symbol)
       raise ArgumentError, "type must be a Symbol (given #{type.class})" unless type.is_a?(Symbol)
-      raise ArgumentError, "type must be one of #{Coercion.supported_coercions} (given :#{type})" unless Coercion.supported_coercions.include?(type)
+      raise ArgumentError, "type must be one of #{supported_coercions} (given :#{type})" unless supported_coercions.include?(type)
     end
   end
 

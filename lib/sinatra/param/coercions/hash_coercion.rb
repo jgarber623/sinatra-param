@@ -9,11 +9,17 @@ module Sinatra
           raise ArgumentError, 'delimiter and separator cannot be the same' if delimiter == separator
           raise InvalidParameterError, %(Parameter value "#{value}" must be a Hash) unless value.match?(/^.+#{separator}/)
 
-          Hash[value.split(delimiter).reject(&:empty?).map { |el| el.split(separator) }]
+          Hash[mapped_values(value, delimiter, separator)]
         end
 
         def identifier
           @identifier ||= :hash
+        end
+
+        private
+
+        def mapped_values(value, delimiter, separator)
+          value.split(delimiter).reject(&:empty?).map { |el| el.split(separator) }
         end
       end
     end
