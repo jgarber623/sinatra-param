@@ -7,6 +7,7 @@ module Sinatra
           separator = options.fetch(:separator, ':')
 
           raise ArgumentError, 'delimiter and separator cannot be the same' if delimiter == separator
+
           raise InvalidParameterError, %(Parameter value "#{value}" must be a Hash) unless value.match?(/^.+#{separator}/)
 
           Hash[mapped_values(value, delimiter, separator)]
