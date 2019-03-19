@@ -5,6 +5,7 @@ require 'sinatra/base'
 require 'sinatra/param/version'
 require 'sinatra/param/error'
 require 'sinatra/param/coercion'
+require 'sinatra/param/default'
 require 'sinatra/param/transformation'
 require 'sinatra/param/validation'
 
@@ -30,9 +31,9 @@ module Sinatra
 
       return unless params.include?(name) || options[:default] || options[:required]
 
-      params[name] = apply_default(params[name], options[:default])
+      params[name] = Default.apply(params[name], options)
       params[name] = Coercion.for_type(type).apply(params[name], options)
-      params[name] = Transformation.apply(params[name], options[:transform])
+      params[name] = Transformation.apply(params[name], options)
 
       Validation.for_param(options).each { |validation| validation.apply(name, params[name], type, options) }
     rescue InvalidParameterError => exception
@@ -53,12 +54,6 @@ module Sinatra
     end
 
     private
-
-    def apply_default(value, default)
-      return value unless value.blank? && default.present?
-
-      default.respond_to?(:call) ? default.call : default
-    end
 
     def handle_exception(exception, options)
       raise exception if raise_exception?(options)
