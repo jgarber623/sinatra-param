@@ -28,13 +28,13 @@ If you're using [Bundler](https://bundler.io), add sinatra-param to your project
 ```ruby
 source 'https://rubygems.org'
 
-gem 'sinatra-param', git: 'https://github.com/jgarber623/sinatra-param', tag: 'v2.1.0'
+gem 'sinatra-param', git: 'https://github.com/jgarber623/sinatra-param', tag: 'v2.2.0'
 ```
 
 If you're using Bundler 2.0, you may simplify the `Gemfile` line to:
 
 ```ruby
-gem 'sinatra-param', github: 'jgarber623/sinatra-param', tag: 'v2.1.0'
+gem 'sinatra-param', github: 'jgarber623/sinatra-param', tag: 'v2.2.0'
 ```
 
 Hop over to your command prompt and run:
