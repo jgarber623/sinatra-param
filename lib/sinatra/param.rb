@@ -6,6 +6,7 @@ require 'sinatra/param/version'
 require 'sinatra/param/error'
 require 'sinatra/param/coercion'
 require 'sinatra/param/default'
+require 'sinatra/param/parameter'
 require 'sinatra/param/transformation'
 require 'sinatra/param/validation'
 
@@ -25,21 +26,19 @@ require 'sinatra/param/validations/within_validation'
 
 module Sinatra
   module Param
-    # rubocop:disable Metrics/AbcSize
     def param(name, type = :string, **options)
       validate_arguments(name, type)
 
       return unless params.include?(name) || options[:default] || options[:required]
 
-      params[name] = Default.apply(params[name], options)
-      params[name] = Coercion.for_type(type).apply(params[name], options)
-      params[name] = Transformation.apply(params[name], options)
+      parameter = Parameter.new(name, params[name], type, options)
 
-      Validation.for_param(options).each { |validation| validation.apply(name, params[name], type, options) }
+      params[name] = parameter.coerce!.transform!.value
+
+      parameter.validate!
     rescue InvalidParameterError => exception
       handle_exception(exception, options)
     end
-    # rubocop:enable Metrics/AbcSize
 
     def one_of(*names, **options)
       raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" if names_count(names, params) > 1
