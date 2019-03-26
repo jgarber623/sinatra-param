@@ -33,9 +33,9 @@ module Sinatra
 
       parameter = Parameter.new(name, params[name], type, options)
 
-      params[name] = parameter.coerce!.transform!.value
+      params[name] = parameter.coerce.transform.value
 
-      parameter.validate!
+      parameter.validate
     rescue InvalidParameterError => exception
       handle_exception(exception, options)
     end

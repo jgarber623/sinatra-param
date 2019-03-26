@@ -10,19 +10,19 @@ module Sinatra
         @options = options
       end
 
-      def coerce!
+      def coerce
         @value = Coercion.for_type(type).apply(value, options)
 
         self
       end
 
-      def transform!
+      def transform
         @value = Transformation.apply(value, options)
 
         self
       end
 
-      def validate!
+      def validate
         validations.each { |validation| validation.apply(name, value, type, options) }
       end
 
