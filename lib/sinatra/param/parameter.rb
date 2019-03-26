@@ -24,6 +24,8 @@ module Sinatra
 
       def validate
         validations.each { |validation| validation.apply(name, value, type, options) }
+
+        self
       end
 
       private

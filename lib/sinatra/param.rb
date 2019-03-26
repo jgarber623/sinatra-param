@@ -31,11 +31,7 @@ module Sinatra
 
       return unless params.include?(name) || options[:default] || options[:required]
 
-      parameter = Parameter.new(name, params[name], type, options)
-
-      params[name] = parameter.coerce.transform.value
-
-      parameter.validate
+      params[name] = Parameter.new(name, params[name], type, options).coerce.transform.validate.value
     rescue InvalidParameterError => exception
       handle_exception(exception, options)
     end
