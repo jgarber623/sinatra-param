@@ -19,7 +19,7 @@ sinatra-param adds useful helpers to your Sinatra application, allowing you to d
 
 Before installing and using sinatra-param, you'll want to have [Ruby](https://www.ruby-lang.org) 2.4 (or newer) installed. It's recommended that you use a Ruby version managment tool like [rbenv](https://github.com/rbenv/rbenv), [chruby](https://github.com/postmodern/chruby), or [rvm](https://github.com/rvm/rvm).
 
-sinatra-param is developed using Ruby 2.4.5 and is additionally tested against Ruby 2.5.5 and 2.6.2 using [Travis CI](https://travis-ci.com/jgarber623/sinatra-param).
+sinatra-param is developed using Ruby 2.4.6 and is additionally tested against Ruby 2.5.5 and 2.6.2 using [Travis CI](https://travis-ci.com/jgarber623/sinatra-param).
 
 ## Installation
 
