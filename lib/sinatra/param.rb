@@ -37,13 +37,13 @@ module Sinatra
     end
 
     def one_of(*names, **options)
-      raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" if names_count(names, params) > 1
+      raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" if present_names_count(names, params) > 1
     rescue TooManyParametersError => exception
       handle_exception(exception, options)
     end
 
     def any_of(*names, **options)
-      raise RequiredParameterError, "At least one of parameters [#{names.join(', ')}] is required" if names_count(names, params) < 1
+      raise RequiredParameterError, "At least one of parameters [#{names.join(', ')}] is required" if present_names_count(names, params) < 1
     rescue RequiredParameterError => exception
       handle_exception(exception, options)
     end
@@ -61,7 +61,7 @@ module Sinatra
       halt 400, response_body
     end
 
-    def names_count(names, params)
+    def present_names_count(names, params)
       names.count { |name| params[name].present? }
     end
 
