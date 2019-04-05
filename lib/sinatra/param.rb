@@ -48,6 +48,12 @@ module Sinatra
       handle_exception(exception, options)
     end
 
+    def all_or_none_of(*names, **options)
+      raise RequiredParameterError, "All or none of parameters [#{names.join(', ')}] are required" unless [0, names.length].include?(present_names_count(names, params))
+    rescue RequiredParameterError => exception
+      handle_exception(exception, options)
+    end
+
     private
 
     def handle_exception(exception, options)

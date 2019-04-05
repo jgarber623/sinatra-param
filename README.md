@@ -12,7 +12,7 @@ sinatra-param adds useful helpers to your Sinatra application, allowing you to d
 ## Key Features
 
 - Provides `param` helper for defining, transforming, and validating parameters.
-- Provides `any_of` and `one_of` helpers for advanced parameter validations.
+- Provides `any_of`, `one_of`, and `all_or_none_of` helpers for advanced parameter validations.
 - Supports Ruby 2.4 and newer.
 
 ## Getting Started
@@ -178,7 +178,7 @@ param :offset, :integer, transform: lambda { |n| n - (n % 10) }
 
 ### `any_of`
 
-Using the `any_of` helper, you can specify that _at least one of_ a set of paramters are required and fail if none of those parameters are provided:
+Using the `any_of` helper, you can specify that _at least one of_ a set of parameters are required and fail if none of those parameters are provided:
 
 ```ruby
 param :a, :string
@@ -198,6 +198,18 @@ param :b, :string
 param :c, :string
 
 one_of :a, :b, :c
+```
+
+### `all_or_none_of`
+
+Using the `all_or_none_of` helper, you can specify that either _none or all of_ a set of parameters is required and will fail if only some of those parameters are provided:
+
+```ruby
+param :a, :string
+param :b, :string
+param :c, :string
+
+all_or_none_of :a, :b, :c
 ```
 
 ## Exception Handling
