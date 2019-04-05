@@ -59,12 +59,7 @@ module Sinatra
     def handle_exception(exception, options)
       raise exception if raise_exception?(options)
 
-      message = "#{exception.class.name.split('::').last}: #{exception.message}"
-
-      response_body = message
-      response_body = { message: message }.to_json if content_type&.match(mime_type(:json))
-
-      halt 400, response_body
+      halt 400, response_body("#{exception.class.name.split('::').last}: #{exception.message}")
     end
 
     def present_names_count(names, params)
@@ -75,6 +70,12 @@ module Sinatra
       options[:raise] || settings.raise_sinatra_param_exceptions
     rescue NoMethodError
       false
+    end
+
+    def response_body(message)
+      return { message: message }.to_json if content_type == mime_type(:json)
+
+      message
     end
 
     def validate_arguments(name, type)
