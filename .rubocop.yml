@@ -1,4 +1,5 @@
 require:
+  - rubocop-performance
   - rubocop-rspec
 
 Metrics/BlockLength:
@@ -7,6 +8,9 @@ Metrics/BlockLength:
 
 Metrics/LineLength:
   Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: exception
 
 RSpec/FilePath:
   Enabled: false
