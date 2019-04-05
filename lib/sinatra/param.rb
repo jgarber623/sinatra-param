@@ -72,7 +72,9 @@ module Sinatra
     end
 
     def raise_exception?(options)
-      options[:raise] || (settings.raise_sinatra_param_exceptions if settings.respond_to?(:raise_sinatra_param_exceptions))
+      options[:raise] || settings.raise_sinatra_param_exceptions
+    rescue NoMethodError
+      false
     end
 
     def validate_arguments(name, type)

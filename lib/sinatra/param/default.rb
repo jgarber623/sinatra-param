@@ -7,7 +7,9 @@ module Sinatra
 
           return value unless value.blank? && default
 
-          default.respond_to?(:call) ? default.call : default
+          default.call
+        rescue NoMethodError
+          default
         end
       end
     end
