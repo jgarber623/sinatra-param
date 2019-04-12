@@ -5,10 +5,6 @@ module Sinatra
         def apply(name, value, _type, options)
           raise InvalidParameterError, %(Parameter #{name} is required and cannot be blank) if options[:required] && value.blank?
         end
-
-        def identifier
-          @identifier ||= :required
-        end
       end
     end
   end

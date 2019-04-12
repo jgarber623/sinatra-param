@@ -9,10 +9,6 @@ module Sinatra
 
           raise InvalidParameterError, %(Parameter value "#{value}" must be within #{values.min} and #{values.max}) unless values.include?(value)
         end
-
-        def identifier
-          @identifier ||= :within
-        end
       end
     end
   end

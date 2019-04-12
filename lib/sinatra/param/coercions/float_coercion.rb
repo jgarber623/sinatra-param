@@ -9,10 +9,6 @@ module Sinatra
         rescue ::ArgumentError
           raise InvalidParameterError, %(Parameter value "#{value}" must be a Float)
         end
-
-        def identifier
-          @identifier ||= :float
-        end
       end
     end
   end

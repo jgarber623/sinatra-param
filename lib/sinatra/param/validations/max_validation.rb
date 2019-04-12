@@ -10,10 +10,6 @@ module Sinatra
 
           raise InvalidParameterError, %(Parameter value "#{value}" may be at most #{max}) unless value <= max
         end
-
-        def identifier
-          @identifier ||= :max
-        end
       end
     end
   end

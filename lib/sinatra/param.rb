@@ -1,5 +1,6 @@
 require 'active_support/core_ext/class/subclasses'
 require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/string/inflections'
 require 'sinatra/base'
 
 require 'sinatra/param/version'

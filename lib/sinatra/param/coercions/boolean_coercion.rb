@@ -10,10 +10,6 @@ module Sinatra
 
           raise InvalidParameterError, %(Parameter value "#{value}" must be a Boolean)
         end
-
-        def identifier
-          @identifier ||= :boolean
-        end
       end
     end
   end

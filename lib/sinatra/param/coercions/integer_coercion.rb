@@ -9,10 +9,6 @@ module Sinatra
         rescue ::ArgumentError
           raise InvalidParameterError, %(Parameter value "#{value}" must be an Integer)
         end
-
-        def identifier
-          @identifier ||= :integer
-        end
       end
     end
   end

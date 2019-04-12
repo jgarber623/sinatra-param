@@ -10,10 +10,6 @@ module Sinatra
 
           raise InvalidParameterError, %(Parameter value "#{value}" must be at least #{min}) unless value >= min
         end
-
-        def identifier
-          @identifier ||= :min
-        end
       end
     end
   end

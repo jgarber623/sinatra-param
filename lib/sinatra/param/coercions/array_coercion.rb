@@ -7,10 +7,6 @@ module Sinatra
 
           value.split(options.fetch(:delimiter, ','))
         end
-
-        def identifier
-          @identifier ||= :array
-        end
       end
     end
   end

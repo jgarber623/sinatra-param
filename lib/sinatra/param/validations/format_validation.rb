@@ -10,10 +10,6 @@ module Sinatra
 
           raise InvalidParameterError, %(Parameter value "#{value}" must match format #{format.source}) unless value.match?(format)
         end
-
-        def identifier
-          @identifier ||= :format
-        end
       end
     end
   end

@@ -13,10 +13,6 @@ module Sinatra
           Hash[mapped_values(value, delimiter, separator)]
         end
 
-        def identifier
-          @identifier ||= :hash
-        end
-
         private
 
         def mapped_values(value, delimiter, separator)

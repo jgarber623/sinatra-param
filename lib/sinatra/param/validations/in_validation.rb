@@ -9,10 +9,6 @@ module Sinatra
 
           raise InvalidParameterError, %(Parameter value "#{value}" must be in [#{values.join(', ')}]) unless values.include?(value)
         end
-
-        def identifier
-          @identifier ||= :in
-        end
       end
     end
   end

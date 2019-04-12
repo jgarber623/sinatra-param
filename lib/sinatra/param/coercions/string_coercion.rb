@@ -7,10 +7,6 @@ module Sinatra
 
           value.to_s
         end
-
-        def identifier
-          @identifier ||= :string
-        end
       end
     end
   end
