@@ -60,7 +60,7 @@ module Sinatra
     def handle_exception(exception, options)
       raise exception if raise_exception?(options)
 
-      halt 400, response_body("#{exception.class.name.split('::').last}: #{exception.message}")
+      halt 400, response_body("#{exception.class.name.demodulize}: #{exception.message}")
     end
 
     def present_names_count(names, params)
