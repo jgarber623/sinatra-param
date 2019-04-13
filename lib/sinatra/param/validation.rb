@@ -2,12 +2,12 @@ module Sinatra
   module Param
     class Validation
       class << self
-        def identifier
-          @identifier ||= name.demodulize.underscore.gsub('_validation', '').to_sym
-        end
-
         def for_options(options)
           subclasses.find_all { |validation| options.key?(validation.identifier) }
+        end
+
+        def identifier
+          @identifier ||= name.demodulize.underscore.gsub('_validation', '').to_sym
         end
 
         def supported_validations
