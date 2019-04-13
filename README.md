@@ -7,7 +7,7 @@
 [![Maintainability](https://img.shields.io/codeclimate/maintainability/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param)
 [![Coverage](https://img.shields.io/codeclimate/c/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param/code)
 
-sinatra-param adds useful helpers to your Sinatra application, allowing you to declare, validate, and transform URL endpoint parameters. By default, Sinatra route parameters are exposed to your application as strings which may then be coerced to more useful classes as needed. sinatra-param smooths over the rough edges and takes care of type coercion and parameter validation on your behalf.
+sinatra-param adds useful helpers to your Sinatra application, allowing you to declare, validate, and transform URL endpoint parameters. By default, Sinatra route parameters are exposed to your application as `String`s which may then be coerced to more useful types as needed. sinatra-param smooths over the rough edges and takes care of type coercion and parameter validation on your behalf.
 
 ## Key Features
 
@@ -150,6 +150,8 @@ sinatra-param supports the following parameter validations:
 | `min`      | `Float` or `Integer`        | `min: 100`               |
 | `required` | `TrueClass` or `FalseClass` | `required: true`         |
 | `within`   | `Range`                     | `within: (A..Z)`         |
+
+**Note:** Parameter validations are applied in random order (owing largely to the way in which Ruby requires files and sorts `Hash`es). The `required: true` parameter validation is the exception to this rule and is run before other parameter validations.
 
 ### Defaults
 
