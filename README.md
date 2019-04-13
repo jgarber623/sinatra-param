@@ -222,11 +222,19 @@ all_or_none_of :a, :b, :c
 
 ## Exception Handling
 
-By default, when a parameter condition fails, sinatra-param will `halt` with a 400 HTTP error response code and an error message (as either `text/plain` or `application/json`):
+By default, when a parameter condition fails, sinatra-param will `halt` with a 400 HTTP error response code and an error message (as either `text/plain` or `application/json`).
+
+In `text/plain`:
+
+```txt
+InvalidParameterError: Parameter foo value "bar" must match ^https?://
+```
+
+…and as `application/json`:
 
 ```json
 {
-  "message": "Parameter value \"foo\" must match ^https?://"
+  "message": "Parameter foo value \"bar\" must match ^https?://"
 }
 ```
 
