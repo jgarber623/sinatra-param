@@ -3,11 +3,11 @@ module Sinatra
     class InValidation < Validation
       class << self
         def apply(name, value, _type, options)
-          values = options[:in]
+          input = options[:in]
 
-          raise ArgumentError, %(in must be an Array (given #{values.class})) unless values.is_a?(Array)
+          raise ArgumentError, %(in must be an Array (given #{input.class})) unless input.is_a?(Array)
 
-          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be in [#{values.join(', ')}]) unless values.include?(value)
+          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be in [#{input.join(', ')}]) unless input.include?(value)
         end
       end
     end
