@@ -58,9 +58,11 @@ module Sinatra
     private
 
     def handle_exception(exception, options)
-      raise exception if raise_exception?(options)
+      message = options.fetch(:message, exception.message)
 
-      halt 400, response_body("#{exception.class.name.demodulize}: #{exception.message}")
+      raise exception, message if raise_exception?(options)
+
+      halt 400, response_body("#{exception.class.name.demodulize}: #{message}")
     end
 
     def present_names_count(names, params)

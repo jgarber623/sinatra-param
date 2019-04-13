@@ -220,7 +220,7 @@ By default, when a parameter condition fails, sinatra-param will `halt` with a 4
 
 In `text/plain`:
 
-```txt
+```text
 InvalidParameterError: Parameter foo value "bar" must match ^https?://
 ```
 
@@ -233,6 +233,23 @@ InvalidParameterError: Parameter foo value "bar" must match ^https?://
 ```
 
 The above would be returned to an end user in response to an HTTP request.
+
+### Custom Messages
+
+Use the `message` option to specify a custom message when coercions or validations encounter an error:
+
+```ruby
+# GET /search?order=BACKWARDS
+get '/search'
+  param :order, :string, in: ['ASC', 'DESC'], message: 'Nice try, friend!'
+
+  …
+end
+```
+
+A request to `/search?order=BACKWARDS` would raise a `Sinatra::Param::InvalidParameterError` with the message, `Nice try, friend!`.
+
+### Exception Classes
 
 Under the covers, sinatra-param captures one of three types of user-level errors. Each is a subclass of `Sinatra::Param::Error` (which itself subclasses `StandardError`):
 
@@ -252,7 +269,7 @@ param :categories, :array
 one_of :query, :categories, raise: true
 ```
 
-You may also globally configure exception handling by setting `:raise_sinatra_param_exceptions` to `true`:
+You may also globally configure exception handling by using `:raise_sinatra_param_exceptions`:
 
 ```ruby
 class App < Sinatra::Base

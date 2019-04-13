@@ -19,6 +19,10 @@ describe Sinatra::Param, :param do
         param :foo, :bar
       end
 
+      get '/custom_message/raise' do
+        param :foo, :string, message: 'bar', raise: true, required: true
+      end
+
       get '/mixed_validations/raise' do
         param :foo, format: %r{^https?://}, raise: true, required: true
       end
@@ -110,6 +114,14 @@ describe Sinatra::Param, :param do
 
       expect(last_response.status).to eq(200)
       expect(last_response.body).to eq({ foo: 'bar' }.to_json)
+    end
+  end
+
+  context 'when setting a custom exception message' do
+    it 'returns the custom exception message' do
+      message = 'bar'
+
+      expect { get '/custom_message/raise' }.to raise_error(Sinatra::Param::InvalidParameterError, message)
     end
   end
 
