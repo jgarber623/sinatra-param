@@ -18,7 +18,7 @@ describe Sinatra::Param::FormatValidation do
 
     context 'when parameter value does not match format Regexp' do
       it 'raises an InvalidParameterError' do
-        message = 'Parameter value "bar" must match format ^https?://'
+        message = 'Parameter foo value "bar" must match format ^https?://'
 
         expect { described_class.apply(:foo, 'bar', :string, format: %r{^https?://}) }.to raise_error(Sinatra::Param::InvalidParameterError, message)
       end

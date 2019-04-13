@@ -10,7 +10,7 @@ describe Sinatra::Param::WithinValidation do
   context 'when given a Range within value' do
     context 'when parameter value is not within specified values' do
       it 'raises an InvalidParameterError' do
-        message = 'Parameter value "50" must be within 1 and 10'
+        message = 'Parameter foo value "50" must be within 1 and 10'
 
         expect { described_class.apply(:foo, 50, :integer, within: (1..10)) }.to raise_error(Sinatra::Param::InvalidParameterError, message)
       end

@@ -18,7 +18,7 @@ describe Sinatra::Param::MinValidation do
 
     context 'when parameter value is less than minimum allowed value' do
       it 'raises an InvalidParameterError' do
-        message = 'Parameter value "0.5" must be at least 1.0'
+        message = 'Parameter foo value "0.5" must be at least 1.0'
 
         expect { described_class.apply(:foo, 0.5, :float, min: 1.0) }.to raise_error(Sinatra::Param::InvalidParameterError, message)
       end

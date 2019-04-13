@@ -18,7 +18,7 @@ describe Sinatra::Param::MaxValidation do
 
     context 'when parameter value is greater than maximum allowed value' do
       it 'raises an InvalidParameterError' do
-        message = 'Parameter value "100" may be at most 10'
+        message = 'Parameter foo value "100" may be at most 10'
 
         expect { described_class.apply(:foo, 100, :integer, max: 10) }.to raise_error(Sinatra::Param::InvalidParameterError, message)
       end
