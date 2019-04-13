@@ -31,7 +31,7 @@ module Sinatra
       private
 
       def validations
-        @validations ||= Validation.for_param(options)
+        @validations ||= Validation.for_options(options)
       end
     end
   end
