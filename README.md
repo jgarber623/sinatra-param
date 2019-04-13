@@ -144,12 +144,20 @@ sinatra-param supports the following parameter validations:
 
 | Name       | Value Class                 | Usage                    |
 |:-----------|:----------------------------|:-------------------------|
+| `required` | `TrueClass` or `FalseClass` | `required: true`         |
 | `format`   | `RegExp`                    | `format: %r{^https?://}` |
 | `in`       | `Array`                     | `in: ['ASC', 'DESC']`    |
+| `within`   | `Range`                     | `within: (A..Z)`         |
 | `max`      | `Float` or `Integer`        | `max: 10.5`              |
 | `min`      | `Float` or `Integer`        | `min: 100`               |
-| `required` | `TrueClass` or `FalseClass` | `required: true`         |
-| `within`   | `Range`                     | `within: (A..Z)`         |
+
+**Note:** Parameter validations are applied in the order listed above, regardless of the order in which they are specified:
+
+```ruby
+param :user, :string, format: %r{^@\w+}, required: true
+```
+
+The above example will first apply the `required: true` validation on the `:user` parameter followed by the `format: %r{^@\w+}` validation (presuming, of course, that the `required: true` validation passes successfully).
 
 ### Defaults
 
