@@ -1,27 +1,27 @@
 describe Sinatra::Param::HashCoercion do
   context 'when given a non-Hash-like String' do
     it 'raises an InvalidParameterError' do
-      message = 'Parameter value "foo" must be a Hash'
+      message = 'Parameter foo value "bar" must be a Hash'
 
-      expect { described_class.apply('foo') }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+      expect { described_class.apply(:foo, 'bar') }.to raise_error(Sinatra::Param::InvalidParameterError, message)
     end
   end
 
   context 'when given a Hash-like String' do
     it 'returns a Hash' do
-      expect(described_class.apply('foo:bar,biz:baz,,,,buz:')).to eq('foo' => 'bar', 'biz' => 'baz', 'buz' => nil)
+      expect(described_class.apply(:foo, 'foo:bar,biz:baz,,,,buz:')).to eq('foo' => 'bar', 'biz' => 'baz', 'buz' => nil)
     end
   end
 
   context 'when given a custom delimiter' do
     it 'returns a Hash' do
-      expect(described_class.apply('foo:bar|biz:baz', delimiter: '|')).to eq('foo' => 'bar', 'biz' => 'baz')
+      expect(described_class.apply(:foo, 'foo:bar|biz:baz', delimiter: '|')).to eq('foo' => 'bar', 'biz' => 'baz')
     end
   end
 
   context 'when given a custom separator' do
     it 'returns a Hash' do
-      expect(described_class.apply('foo|bar', separator: '|')).to eq('foo' => 'bar')
+      expect(described_class.apply(:foo, 'foo|bar', separator: '|')).to eq('foo' => 'bar')
     end
   end
 
@@ -29,7 +29,7 @@ describe Sinatra::Param::HashCoercion do
     it 'raises an ArgumentError' do
       message = 'delimiter and separator cannot be the same'
 
-      expect { described_class.apply('foo', delimiter: ',', separator: ',') }.to raise_error(Sinatra::Param::ArgumentError, message)
+      expect { described_class.apply(:foo, 'bar', delimiter: ',', separator: ',') }.to raise_error(Sinatra::Param::ArgumentError, message)
     end
   end
 end
