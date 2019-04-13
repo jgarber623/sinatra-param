@@ -2,10 +2,7 @@ module Sinatra
   module Param
     class HashCoercion < Coercion
       class << self
-        def apply(value, **options)
-          delimiter = options.fetch(:delimiter, ',')
-          separator = options.fetch(:separator, ':')
-
+        def apply(value, delimiter: ',', separator: ':', **_options)
           raise ArgumentError, 'delimiter and separator cannot be the same' if delimiter == separator
 
           raise InvalidParameterError, %(Parameter value "#{value}" must be a Hash) unless value.match?(/^.+#{separator}/)
