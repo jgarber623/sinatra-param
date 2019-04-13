@@ -2,9 +2,7 @@ module Sinatra
   module Param
     class Transformation
       class << self
-        def apply(value, **options)
-          transform = options.fetch(:transform, nil)
-
+        def apply(value, transform: nil, **_options)
           return value unless transform
 
           raise ArgumentError, "transform must be a Proc or Symbol (given #{transform.class})" unless [Proc, Symbol].include?(transform.class)
