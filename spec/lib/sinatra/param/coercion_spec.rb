@@ -1,7 +1,7 @@
 describe Sinatra::Param::Coercion do
-  describe '.for_type' do
+  describe '.for' do
     it 'returns an Array' do
-      expect(described_class.for_type(:string)).to eq(Sinatra::Param::StringCoercion)
+      expect(described_class.for(:string)).to eq(Sinatra::Param::StringCoercion)
     end
   end
 

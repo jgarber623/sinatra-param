@@ -2,8 +2,8 @@ module Sinatra
   module Param
     class Coercion
       class << self
-        def for_type(type)
-          subclasses.find { |coercion| coercion.identifier == type }
+        def for(identifier)
+          subclasses.find { |subclass| subclass.identifier == identifier }
         end
 
         def identifier

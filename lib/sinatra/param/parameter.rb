@@ -11,7 +11,7 @@ module Sinatra
       end
 
       def coerce
-        @value = Coercion.for_type(type).apply(name, value, options)
+        @value = Coercion.for(type).apply(name, value, options)
 
         self
       end
