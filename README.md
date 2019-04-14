@@ -15,6 +15,20 @@ sinatra-param adds useful helpers to your Sinatra application, allowing you to d
 - Provides `any_of`, `one_of`, and `all_or_none_of` helpers for advanced parameter validations.
 - Supports Ruby 2.4 and newer.
 
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Parameter Types](#parameter-types)
+    - [Validations](#validations)
+    - [Defaults](#defaults)
+    - [Transformations](#transformations)
+- [Additional Helpers](#additional-helpers)
+- [Exception Handling](#exception-handling)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+
 ## Getting Started
 
 Before installing and using sinatra-param, you'll want to have [Ruby](https://www.ruby-lang.org) 2.4 (or newer) installed. It's recommended that you use a Ruby version managment tool like [rbenv](https://github.com/rbenv/rbenv), [chruby](https://github.com/postmodern/chruby), or [rvm](https://github.com/rvm/rvm).
@@ -136,7 +150,7 @@ get '/search' do
 end
 ```
 
-**Note:** `:hash` parameter types return a `Hash` with keys and values as `String`s. Additional type coercion on elements in the `Hash` should be handled by your application code.
+`:hash` parameter types return a `Hash` with keys and values as `String`s. Additional type coercion on elements in the `Hash` should be handled by your application code.
 
 ### Validations
 
@@ -146,12 +160,19 @@ sinatra-param supports the following parameter validations:
 |:-----------|:----------------------------|:-------------------------|
 | `format`   | `RegExp`                    | `format: %r{^https?://}` |
 | `in`       | `Array`                     | `in: ['ASC', 'DESC']`    |
+| `match`    | `Array`, `Float`, etc.†     | `match: 'foo'`           |
 | `max`      | `Float` or `Integer`        | `max: 10.5`              |
 | `min`      | `Float` or `Integer`        | `min: 100`               |
 | `required` | `TrueClass` or `FalseClass` | `required: true`         |
 | `within`   | `Range`                     | `within: (A..Z)`         |
 
-**Note:** Parameter validations are applied in random order (owing largely to the way in which Ruby requires files and sorts `Hash`es). The `required: true` parameter validation is the exception to this rule and is run before other parameter validations.
+Parameter validations are applied in random order (owing largely to the way in which Ruby requires files and sorts `Hash`es). The `required: true` parameter validation is the exception to this rule and is run before other parameter validations.
+
+† `match` parameter validation values must be of the same class as the parameter itself:
+
+```ruby
+param :agree_to_terms, :string, match: 'yes', required: true
+```
 
 ### Defaults
 

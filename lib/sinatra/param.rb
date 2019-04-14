@@ -20,6 +20,7 @@ require 'sinatra/param/coercions/string_coercion'
 
 require 'sinatra/param/validations/in_validation'
 require 'sinatra/param/validations/format_validation'
+require 'sinatra/param/validations/match_validation'
 require 'sinatra/param/validations/max_validation'
 require 'sinatra/param/validations/min_validation'
 require 'sinatra/param/validations/required_validation'
