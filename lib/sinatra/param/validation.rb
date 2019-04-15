@@ -2,12 +2,8 @@ module Sinatra
   module Param
     class Validation
       class << self
-        def for_options(required: nil, **options)
-          validations = subclasses.find_all { |validation| options.key?(validation.identifier) }
-
-          return validations unless required
-
-          validations.unshift(subclasses.find { |subclass| subclass.identifier == :required })
+        def for(identifier)
+          subclasses.find { |subclass| subclass.identifier == identifier }
         end
 
         def identifier

@@ -23,7 +23,7 @@ module Sinatra
       end
 
       def validate
-        validations.each { |validation| validation.apply(name, value, type, options) }
+        validations.each { |identifier| Validation.for(identifier).apply(name, value, type, options) }
 
         self
       end
@@ -31,7 +31,7 @@ module Sinatra
       private
 
       def validations
-        @validations ||= Validation.for_options(options)
+        @validations ||= options.keys.find_all { |option| Validation.supported_validations.include?(option) }
       end
     end
   end
