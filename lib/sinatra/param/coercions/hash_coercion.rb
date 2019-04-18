@@ -13,7 +13,7 @@ module Sinatra
         def apply
           raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be a Hash) unless value.match?(/^.+#{separator}/)
 
-          Hash[mapped_values]
+          Hash[mapped_values].transform_keys(&:to_sym)
         end
 
         private

@@ -9,7 +9,7 @@ describe Sinatra::Param::Parameter, :apply do
 
   context 'when given valid Coercion arguments' do
     it 'coerces the value' do
-      expect(described_class.new(:foo, :hash, 'foo:bar,biz:baz').apply).to eq('foo' => 'bar', 'biz' => 'baz')
+      expect(described_class.new(:foo, :hash, 'foo:bar,biz:baz').apply).to eq(foo: 'bar', biz: 'baz')
     end
   end
 

@@ -139,18 +139,18 @@ Similarly, `:hash` parameters are comma-delimited and key/value pairs are colon-
 get '/search' do
   param :coordinates, :hash
 
-  puts coordinates # => { 'x': '1', 'y': '1' }
+  puts coordinates # => { x: '1', y: '1' }
 end
 
 # GET /search?coordinates=x_1|y_1
 get '/search' do
   param :coordinates, :hash, delimiter: '|', separator: '_'
 
-  puts coordinates # => { 'x': '1', 'y': '1' }
+  puts coordinates # => { x: '1', y: '1' }
 end
 ```
 
-`:hash` parameter types return a `Hash` with keys and values as `String`s. Additional type coercion on elements in the `Hash` should be handled by your application code.
+`:hash` parameter types return values as `String`s. Additional type coercion on elements in the `Hash` should be handled by your application code.
 
 ### Validations
 

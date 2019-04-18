@@ -9,19 +9,19 @@ describe Sinatra::Param::Coercions::HashCoercion do
 
   context 'when given a Hash-like String' do
     it 'returns a Hash' do
-      expect(described_class.new(:foo, 'foo:bar,biz:baz,,,,buz:').apply).to eq('foo' => 'bar', 'biz' => 'baz', 'buz' => nil)
+      expect(described_class.new(:foo, 'foo:bar,biz:baz,,,,buz:').apply).to eq(foo: 'bar', biz: 'baz', buz: nil)
     end
   end
 
   context 'when given a custom delimiter' do
     it 'returns a Hash' do
-      expect(described_class.new(:foo, 'foo:bar|biz:baz', delimiter: '|').apply).to eq('foo' => 'bar', 'biz' => 'baz')
+      expect(described_class.new(:foo, 'foo:bar|biz:baz', delimiter: '|').apply).to eq(foo: 'bar', biz: 'baz')
     end
   end
 
   context 'when given a custom separator' do
     it 'returns a Hash' do
-      expect(described_class.new(:foo, 'foo|bar', separator: '|').apply).to eq('foo' => 'bar')
+      expect(described_class.new(:foo, 'foo|bar', separator: '|').apply).to eq(foo: 'bar')
     end
   end
 
