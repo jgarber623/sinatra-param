@@ -22,6 +22,8 @@ require 'sinatra/param/validations/in_validation'
 require 'sinatra/param/validations/match_validation'
 require 'sinatra/param/validations/max_validation'
 require 'sinatra/param/validations/min_validation'
+require 'sinatra/param/validations/maxlength_validation'
+require 'sinatra/param/validations/minlength_validation'
 require 'sinatra/param/validations/required_validation'
 require 'sinatra/param/validations/within_validation'
 
