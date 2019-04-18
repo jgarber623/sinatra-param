@@ -1,6 +1,5 @@
 language: ruby
 rvm:
-  - 2.4.6
   - 2.5.5
   - 2.6.2
 cache:
@@ -15,6 +14,7 @@ before_script:
 script:
   - bundle exec rubocop
   - bundle exec rake
+  - bundle exec reek
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 notifications:

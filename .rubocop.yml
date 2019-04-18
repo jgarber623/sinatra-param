@@ -12,9 +12,6 @@ Metrics/LineLength:
 Naming/RescuedExceptionsVariableName:
   PreferredName: exception
 
-RSpec/FilePath:
-  Enabled: false
-
 RSpec/MultipleExpectations:
   Max: 2
 
