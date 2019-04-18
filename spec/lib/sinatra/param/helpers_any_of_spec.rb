@@ -1,7 +1,7 @@
-describe Sinatra::Param, :any_of do
+describe Sinatra::Param::Helpers, :any_of do
   before do
     mock_app do
-      helpers Sinatra::Param
+      register Sinatra::Param
 
       before do
         content_type :json
@@ -38,7 +38,6 @@ describe Sinatra::Param, :any_of do
 
   context 'when no parameters are specified' do
     let(:message) { 'At least one of parameters [foo, bar] is required' }
-    let(:full_message) { "RequiredParameterError: #{message}" }
 
     it 'raises a RequiredParameterError' do
       expect { get '/any_of/raise' }.to raise_error(Sinatra::Param::RequiredParameterError, message)
@@ -48,14 +47,14 @@ describe Sinatra::Param, :any_of do
       get '/any_of'
 
       expect(last_response.status).to eq(400)
-      expect(last_response.body).to eq({ message: full_message }.to_json)
+      expect(last_response.body).to eq({ message: message }.to_json)
     end
 
     it 'halts with a 400 HTTP response code and a plaintext response body' do
       get '/any_of/plaintext'
 
       expect(last_response.status).to eq(400)
-      expect(last_response.body).to eq(full_message)
+      expect(last_response.body).to eq(message)
     end
   end
 

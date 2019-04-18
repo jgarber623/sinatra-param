@@ -1,9 +1,9 @@
-describe Sinatra::Param::MatchValidation do
+describe Sinatra::Param::Validations::MatchValidation do
   context 'when parameter type and match class do not match' do
     it 'raises an ArgumentError' do
       message = 'match must be an Integer (given String)'
 
-      expect { described_class.apply(:foo, 1, :integer, match: 'bar') }.to raise_error(Sinatra::Param::ArgumentError, message)
+      expect { described_class.new(:foo, :integer, 1, match: 'bar') }.to raise_error(Sinatra::Param::ArgumentError, message)
     end
   end
 
@@ -11,13 +11,13 @@ describe Sinatra::Param::MatchValidation do
     it 'raises an InvalidParameterError' do
       message = 'Parameter foo value "bar" must match biz'
 
-      expect { described_class.apply(:foo, 'bar', :string, match: 'biz') }.to raise_error(Sinatra::Param::InvalidParameterError, message)
+      expect { described_class.new(:foo, :string, 'bar', match: 'biz').apply }.to raise_error(Sinatra::Param::InvalidParameterError, message)
     end
   end
 
   context 'when parameter value matches expected value' do
     it 'returns nil' do
-      expect(described_class.apply(:foo, 'bar', :string, match: 'bar')).to be(nil)
+      expect(described_class.new(:foo, :string, 'bar', match: 'bar').apply).to be(nil)
     end
   end
 end

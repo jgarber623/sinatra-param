@@ -1,7 +1,7 @@
-describe Sinatra::Param, :one_of do
+describe Sinatra::Param::Helpers, :one_of do
   before do
     mock_app do
-      helpers Sinatra::Param
+      register Sinatra::Param
 
       before do
         content_type :json
@@ -38,7 +38,6 @@ describe Sinatra::Param, :one_of do
 
   context 'when more than one parameter is specified' do
     let(:message) { 'Only one of parameters [foo, bar] is allowed' }
-    let(:full_message) { "TooManyParametersError: #{message}" }
 
     it 'raises a TooManyParametersError' do
       expect { get '/one_of/raise', foo: 1, bar: 2 }.to raise_error(Sinatra::Param::TooManyParametersError, message)
@@ -48,14 +47,14 @@ describe Sinatra::Param, :one_of do
       get '/one_of', foo: 1, bar: 2
 
       expect(last_response.status).to eq(400)
-      expect(last_response.body).to eq({ message: full_message }.to_json)
+      expect(last_response.body).to eq({ message: message }.to_json)
     end
 
     it 'halts with a 400 HTTP response code and a plaintext response body' do
       get '/one_of/plaintext', foo: 1, bar: 2
 
       expect(last_response.status).to eq(400)
-      expect(last_response.body).to eq(full_message)
+      expect(last_response.body).to eq(message)
     end
   end
 

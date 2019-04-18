@@ -1,7 +1,7 @@
-describe Sinatra::Param, :all_or_none_of do
+describe Sinatra::Param::Helpers, :all_or_none_of do
   before do
     mock_app do
-      helpers Sinatra::Param
+      register Sinatra::Param
 
       before do
         content_type :json
@@ -59,7 +59,6 @@ describe Sinatra::Param, :all_or_none_of do
 
   context 'when some parameters are specified' do
     let(:message) { 'All or none of parameters [foo, bar, biz] are required' }
-    let(:full_message) { "RequiredParameterError: #{message}" }
 
     it 'raises a RequiredParameterError' do
       expect { get '/all_or_none_of/raise', foo: 'bar' }.to raise_error(Sinatra::Param::RequiredParameterError, message)
@@ -69,14 +68,14 @@ describe Sinatra::Param, :all_or_none_of do
       get '/all_or_none_of', foo: 'bar'
 
       expect(last_response.status).to eq(400)
-      expect(last_response.body).to eq({ message: full_message }.to_json)
+      expect(last_response.body).to eq({ message: message }.to_json)
     end
 
     it 'halts with a 400 HTTP response code and a plaintext response body' do
       get '/all_or_none_of/plaintext', foo: 'bar'
 
       expect(last_response.status).to eq(400)
-      expect(last_response.body).to eq(full_message)
+      expect(last_response.body).to eq(message)
     end
   end
 
