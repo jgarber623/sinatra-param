@@ -9,3 +9,6 @@ detectors:
   ManualDispatch:
     exclude:
       - Sinatra::Param#self.registered
+
+exclude_paths:
+  - vendor/
