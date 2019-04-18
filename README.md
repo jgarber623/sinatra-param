@@ -142,9 +142,9 @@ get '/search' do
   puts coordinates # => { 'x': '1', 'y': '1' }
 end
 
-# GET /search?coordinates=x|1_y|1
+# GET /search?coordinates=x_1|y_1
 get '/search' do
-  param :coordinates, :hash, delimiter: '_', separator: '|'
+  param :coordinates, :hash, delimiter: '|', separator: '_'
 
   puts coordinates # => { 'x': '1', 'y': '1' }
 end
