@@ -13,7 +13,7 @@ sinatra-param adds useful helpers to your Sinatra application, allowing you to d
 
 - Provides `param` helper for defining, transforming, and validating parameters.
 - Provides `any_of`, `one_of`, and `all_or_none_of` helpers for advanced parameter validations.
-- Supports Ruby 2.4 and newer.
+- Supports Ruby 2.5 and newer.
 
 ## Table of Contents
 
@@ -31,9 +31,9 @@ sinatra-param adds useful helpers to your Sinatra application, allowing you to d
 
 ## Getting Started
 
-Before installing and using sinatra-param, you'll want to have [Ruby](https://www.ruby-lang.org) 2.4 (or newer) installed. It's recommended that you use a Ruby version managment tool like [rbenv](https://github.com/rbenv/rbenv), [chruby](https://github.com/postmodern/chruby), or [rvm](https://github.com/rvm/rvm).
+Before installing and using sinatra-param, you'll want to have [Ruby](https://www.ruby-lang.org) 2.5 (or newer) installed. It's recommended that you use a Ruby version managment tool like [rbenv](https://github.com/rbenv/rbenv), [chruby](https://github.com/postmodern/chruby), or [rvm](https://github.com/rvm/rvm).
 
-sinatra-param is developed using Ruby 2.4.6 and is additionally tested against Ruby 2.5.5 and 2.6.2 using [Travis CI](https://travis-ci.com/jgarber623/sinatra-param).
+sinatra-param is developed using Ruby 2.5.5 and is additionally tested against Ruby 2.6.2 using [Travis CI](https://travis-ci.com/jgarber623/sinatra-param).
 
 ## Installation
 
@@ -42,13 +42,13 @@ If you're using [Bundler](https://bundler.io), add sinatra-param to your project
 ```ruby
 source 'https://rubygems.org'
 
-gem 'sinatra-param', git: 'https://github.com/jgarber623/sinatra-param', tag: 'v2.5.0'
+gem 'sinatra-param', git: 'https://github.com/jgarber623/sinatra-param', tag: 'v3.0.0'
 ```
 
 If you're using Bundler 2.0, you may simplify the `Gemfile` line to:
 
 ```ruby
-gem 'sinatra-param', github: 'jgarber623/sinatra-param', tag: 'v2.5.0'
+gem 'sinatra-param', github: 'jgarber623/sinatra-param', tag: 'v3.0.0'
 ```
 
 Hop over to your command prompt and run:
@@ -80,10 +80,10 @@ class App < Sinatra::Base
   # GET /search?user=@jgarber
   # GET /search?user=@jgarber&attributes=first_name,email_address,url
   get '/search' do
-    param :user,       :string, format: %r{^@\w+}, required: true
+    param :user,       :string, required: true, format: %r{^@\w+}
     param :attributes, :array,  default: ['first_name', 'last_name']
 
-    json { status: 'OK', … }
+    json { status: 'OK' }
   end
 
   # GET /articles?page=5
@@ -92,7 +92,7 @@ class App < Sinatra::Base
     param :page,  :integer, default: 1
     param :order, :string,  default: 'ASC', in: ['ASC', 'DESC'], transform: :upcase
 
-    json { status: 'OK', … }
+    json { status: 'OK' }
   end
 
   # /photos?include_drafts=true
@@ -101,7 +101,7 @@ class App < Sinatra::Base
     param :include_drafts, :boolean, default: false
     param :taken_in,       :integer, within: Range.new(2000, 2019)
 
-    json { status: 'OK', … }
+    json { status: 'OK' }
   end
 end
 ```
@@ -166,13 +166,19 @@ sinatra-param supports the following parameter validations:
 | `required` | `TrueClass` or `FalseClass` | `required: true`         |
 | `within`   | `Range`                     | `within: (A..Z)`         |
 
-Parameter validations are applied in random order (owing largely to the way in which Ruby requires files and sorts `Hash`es). The `required: true` parameter validation is the exception to this rule and is run before other parameter validations.
-
 † `match` parameter validation values must be of the same class as the parameter itself:
 
 ```ruby
 param :agree_to_terms, :string, match: 'yes', required: true
 ```
+
+Parameter validations are applied in the order in which they are passed to the `param` helper:
+
+```ruby
+param :url, :string, format: %r{^https?://}, required: true
+```
+
+In the example above, the `format` validation will execute before the `required` validation. This may be used intentionally to influence the order in which errors are raised.
 
 ### Defaults
 
@@ -242,7 +248,7 @@ By default, when a parameter condition fails, sinatra-param will `halt` with a 4
 In `text/plain`:
 
 ```text
-InvalidParameterError: Parameter foo value "bar" must match ^https?://
+Parameter foo value "bar" must match ^https?://
 ```
 
 …and as `application/json`:
@@ -264,7 +270,7 @@ Use the `message` option to specify a custom message when coercions or validatio
 get '/search'
   param :order, :string, in: ['ASC', 'DESC'], message: 'Nice try, friend!'
 
-  …
+  # The rest of your route-specific code goes here…
 end
 ```
 
@@ -272,13 +278,15 @@ A request to `/search?order=BACKWARDS` would raise a `Sinatra::Param::InvalidPar
 
 ### Exception Classes
 
-Under the covers, sinatra-param captures one of three types of user-level errors. Each is a subclass of `Sinatra::Param::Error` (which itself subclasses `StandardError`):
+Under the covers, sinatra-param captures one of three types of user-level errors. Each is a subclass Ruby's `StandardError`:
 
 - `Sinatra::Param::InvalidParameterError`
-- `Sinatra::Param::RequiredParameterError` (raised by the `any_of` helper)
+- `Sinatra::Param::RequiredParameterError` (raised by the `all_or_none_of` and `any_of` helpers)
 - `Sinatra::Param::TooManyParametersError` (raise by the `one_of` helper)
 
-Additionally, `Sinatra::Param::ArgumentError`s will be raised if implementation errors are encountered (e.g. mismatches between a parameter type and its default value).
+Additionally, `Sinatra::Param::ArgumentError`s is raised if implementation errors are encountered (e.g. mismatches between a parameter type and its default value).
+
+### Configuring Exception Handling
 
 If you'd prefer to handle these errors on your own, you can add the `raise: true` option to any `param`, `one_of`, or `any_of` declaration:
 
@@ -298,7 +306,7 @@ class App < Sinatra::Base
     set :raise_sinatra_param_exceptions, true
   end
 
-  …
+  # The rest of your application code goes here…
 end
 ```
 
@@ -311,7 +319,7 @@ class App < Sinatra::Base
     set :show_exceptions, false
   end
 
-  …
+  # The rest of your application code goes here…
 end
 ```
 
