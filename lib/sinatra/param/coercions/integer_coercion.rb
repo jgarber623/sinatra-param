@@ -1,8 +1,10 @@
 module Sinatra
   module Param
-    class IntegerCoercion < Coercion
-      class << self
-        def apply(name, value, **_options)
+    module Coercions
+      class IntegerCoercion < BaseCoercion
+        Coercions.register(:integer, self)
+
+        def apply
           return value if value.is_a?(Integer)
 
           Integer(value, 10)

@@ -1,13 +1,23 @@
 module Sinatra
   module Param
-    class InValidation < Validation
-      class << self
-        def apply(name, value, _type, options)
-          input = options[:in]
+    module Validations
+      class InValidation < BaseValidation
+        Validations.register(:in, self)
 
-          raise ArgumentError, %(in must be an Array (given #{input.class})) unless input.is_a?(Array)
+        def initialize(*args)
+          super
 
-          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be in [#{input.join(', ')}]) unless input.include?(value)
+          raise ArgumentError, %(in must be an Array (given #{constraint.class})) unless constraint.is_a?(Array)
+        end
+
+        def apply
+          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be in [#{constraint.join(', ')}]) unless constraint.include?(value)
+        end
+
+        private
+
+        def constraint
+          @constraint ||= options[:in]
         end
       end
     end

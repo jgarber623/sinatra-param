@@ -1,11 +1,13 @@
 module Sinatra
   module Param
-    class ArrayCoercion < Coercion
-      class << self
-        def apply(_name, value, delimiter: ',', **_options)
+    module Coercions
+      class ArrayCoercion < BaseCoercion
+        Coercions.register(:array, self)
+
+        def apply
           return value if value.is_a?(Array)
 
-          value.split(delimiter)
+          value.split(options.fetch(:delimiter, ','))
         end
       end
     end

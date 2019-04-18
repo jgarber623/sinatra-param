@@ -1,8 +1,10 @@
 module Sinatra
   module Param
-    class BooleanCoercion < Coercion
-      class << self
-        def apply(name, value, **_options)
+    module Coercions
+      class BooleanCoercion < BaseCoercion
+        Coercions.register(:boolean, self)
+
+        def apply
           return value if [TrueClass, FalseClass].include?(value.class)
 
           return false if %w[false no 0].include?(value)

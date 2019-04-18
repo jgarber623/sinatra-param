@@ -1,8 +1,10 @@
 module Sinatra
   module Param
-    class FloatCoercion < Coercion
-      class << self
-        def apply(name, value, **_options)
+    module Coercions
+      class FloatCoercion < BaseCoercion
+        Coercions.register(:float, self)
+
+        def apply
           return value if value.is_a?(Float)
 
           Float(value)

@@ -1,14 +1,24 @@
 module Sinatra
   module Param
-    class MaxValidation < Validation
-      class << self
-        def apply(name, value, type, options)
-          input = options[:max]
+    module Validations
+      class MaxValidation < BaseValidation
+        Validations.register(:max, self)
+
+        def initialize(*args)
+          super
 
           raise ArgumentError, %(type must be one of [:float, :integer] (given :#{type})) unless [:float, :integer].include?(type)
-          raise ArgumentError, %(min must be a Float or an Integer (given #{input.class})) unless [Float, Integer].include?(input.class)
+          raise ArgumentError, %(max must be a Float or an Integer (given #{constraint.class})) unless [Float, Integer].include?(constraint.class)
+        end
 
-          raise InvalidParameterError, %(Parameter #{name} value "#{value}" may be at most #{input}) unless value <= input
+        def apply
+          raise InvalidParameterError, %(Parameter #{name} value "#{value}" may be at most #{constraint}) unless value <= constraint
+        end
+
+        private
+
+        def constraint
+          @constraint ||= options[:max]
         end
       end
     end

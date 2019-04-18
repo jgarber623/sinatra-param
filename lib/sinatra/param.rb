@@ -1,16 +1,14 @@
-require 'active_support/core_ext/class/subclasses'
 require 'active_support/core_ext/object/blank'
-require 'active_support/core_ext/string/inflections'
+require 'sinatra/param/core_ext/enumerable'
+
 require 'sinatra/base'
 
 require 'sinatra/param/version'
-require 'sinatra/param/error'
-require 'sinatra/param/coercion'
-require 'sinatra/param/default'
+require 'sinatra/param/exceptions'
 require 'sinatra/param/parameter'
-require 'sinatra/param/transformation'
-require 'sinatra/param/validation'
+require 'sinatra/param/registerable'
 
+require 'sinatra/param/coercions'
 require 'sinatra/param/coercions/array_coercion'
 require 'sinatra/param/coercions/boolean_coercion'
 require 'sinatra/param/coercions/float_coercion'
@@ -18,8 +16,9 @@ require 'sinatra/param/coercions/hash_coercion'
 require 'sinatra/param/coercions/integer_coercion'
 require 'sinatra/param/coercions/string_coercion'
 
-require 'sinatra/param/validations/in_validation'
+require 'sinatra/param/validations'
 require 'sinatra/param/validations/format_validation'
+require 'sinatra/param/validations/in_validation'
 require 'sinatra/param/validations/match_validation'
 require 'sinatra/param/validations/max_validation'
 require 'sinatra/param/validations/min_validation'
@@ -28,68 +27,48 @@ require 'sinatra/param/validations/within_validation'
 
 module Sinatra
   module Param
-    def param(name, type = :string, **options)
-      validate_arguments(name, type)
+    module Helpers
+      def param(name, type = :string, **options)
+        return unless params.include?(name) || options[:default] || options[:required]
 
-      return unless params.include?(name) || options[:default] || options[:required]
+        params[name] = Parameter.new(name, type, params[name], options).apply
+      rescue InvalidParameterError => exception
+        handle_exception(exception, options)
+      end
 
-      params[name] = Parameter.new(name, params[name], type, options).coerce.transform.validate.value
-    rescue InvalidParameterError => exception
-      handle_exception(exception, options)
+      def one_of(*names, **options)
+        raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" unless names.one? { |name| params[name].present? }
+      rescue TooManyParametersError => exception
+        handle_exception(exception, options)
+      end
+
+      def any_of(*names, **options)
+        raise RequiredParameterError, "At least one of parameters [#{names.join(', ')}] is required" unless names.any? { |name| params[name].present? }
+      rescue RequiredParameterError => exception
+        handle_exception(exception, options)
+      end
+
+      def all_or_none_of(*names, **options)
+        raise RequiredParameterError, "All or none of parameters [#{names.join(', ')}] are required" unless names.all_or_none? { |name| params[name].present? }
+      rescue RequiredParameterError => exception
+        handle_exception(exception, options)
+      end
+
+      private
+
+      def handle_exception(exception, **options)
+        message = options.fetch(:message, exception.message)
+
+        raise exception.class, message if options[:raise] || settings.raise_sinatra_param_exceptions
+
+        halt 400, content_type == mime_type(:json) ? { message: message }.to_json : message
+      end
     end
 
-    def one_of(*names, **options)
-      raise TooManyParametersError, "Only one of parameters [#{names.join(', ')}] is allowed" if present_names_count(names, params) > 1
-    rescue TooManyParametersError => exception
-      handle_exception(exception, options)
-    end
+    def self.registered(app)
+      app.helpers Helpers
 
-    def any_of(*names, **options)
-      raise RequiredParameterError, "At least one of parameters [#{names.join(', ')}] is required" if present_names_count(names, params) < 1
-    rescue RequiredParameterError => exception
-      handle_exception(exception, options)
-    end
-
-    def all_or_none_of(*names, **options)
-      raise RequiredParameterError, "All or none of parameters [#{names.join(', ')}] are required" unless [0, names.length].include?(present_names_count(names, params))
-    rescue RequiredParameterError => exception
-      handle_exception(exception, options)
-    end
-
-    private
-
-    def handle_exception(exception, options)
-      message = options.fetch(:message, exception.message)
-
-      raise exception, message if raise_exception?(options)
-
-      halt 400, response_body("#{exception.class.name.demodulize}: #{message}")
-    end
-
-    def present_names_count(names, params)
-      names.count { |name| params[name].present? }
-    end
-
-    def raise_exception?(options)
-      options[:raise] || settings.raise_sinatra_param_exceptions
-    rescue NoMethodError
-      false
-    end
-
-    def response_body(message)
-      return { message: message }.to_json if content_type == mime_type(:json)
-
-      message
-    end
-
-    def validate_arguments(name, type)
-      supported_coercions = Coercion.supported_coercions
-
-      raise ArgumentError, "name must be a Symbol (given #{name.class})" unless name.is_a?(Symbol)
-      raise ArgumentError, "type must be a Symbol (given #{type.class})" unless type.is_a?(Symbol)
-      raise ArgumentError, "type must be one of #{supported_coercions} (given :#{type})" unless supported_coercions.include?(type)
+      app.set :raise_sinatra_param_exceptions, false unless app.respond_to?(:raise_sinatra_param_exceptions)
     end
   end
-
-  helpers Param
 end

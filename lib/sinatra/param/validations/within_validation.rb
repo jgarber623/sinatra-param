@@ -1,13 +1,23 @@
 module Sinatra
   module Param
-    class WithinValidation < Validation
-      class << self
-        def apply(name, value, _type, options)
-          input = options[:within]
+    module Validations
+      class WithinValidation < BaseValidation
+        Validations.register(:within, self)
 
-          raise ArgumentError, %(within must be a Range (given #{input.class})) unless input.is_a?(Range)
+        def initialize(*args)
+          super
 
-          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be within #{input.min} and #{input.max}) unless input.include?(value)
+          raise ArgumentError, %(within must be a Range (given #{constraint.class})) unless constraint.is_a?(Range)
+        end
+
+        def apply
+          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be within #{constraint.min} and #{constraint.max}) unless constraint.include?(value)
+        end
+
+        private
+
+        def constraint
+          @constraint ||= options[:within]
         end
       end
     end

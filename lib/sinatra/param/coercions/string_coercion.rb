@@ -1,8 +1,10 @@
 module Sinatra
   module Param
-    class StringCoercion < Coercion
-      class << self
-        def apply(_name, value, **_options)
+    module Coercions
+      class StringCoercion < BaseCoercion
+        Coercions.register(:string, self)
+
+        def apply
           return value if value.is_a?(String)
 
           value.to_s

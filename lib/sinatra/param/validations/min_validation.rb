@@ -1,14 +1,24 @@
 module Sinatra
   module Param
-    class MinValidation < Validation
-      class << self
-        def apply(name, value, type, options)
-          input = options[:min]
+    module Validations
+      class MinValidation < BaseValidation
+        Validations.register(:min, self)
+
+        def initialize(*args)
+          super
 
           raise ArgumentError, %(type must be one of [:float, :integer] (given :#{type})) unless [:float, :integer].include?(type)
-          raise ArgumentError, %(min must be a Float or an Integer (given #{input.class})) unless [Float, Integer].include?(input.class)
+          raise ArgumentError, %(min must be a Float or an Integer (given #{constraint.class})) unless [Float, Integer].include?(constraint.class)
+        end
 
-          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be at least #{input}) unless value >= input
+        def apply
+          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must be at least #{constraint}) unless value >= constraint
+        end
+
+        private
+
+        def constraint
+          @constraint ||= options[:min]
         end
       end
     end

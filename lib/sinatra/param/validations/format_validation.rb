@@ -1,14 +1,24 @@
 module Sinatra
   module Param
-    class FormatValidation < Validation
-      class << self
-        def apply(name, value, type, options)
-          input = options[:format]
+    module Validations
+      class FormatValidation < BaseValidation
+        Validations.register(:format, self)
+
+        def initialize(*args)
+          super
 
           raise ArgumentError, %(type must be :string (given :#{type})) unless type == :string
-          raise ArgumentError, %(format must be a Regexp (given #{input.class})) unless input.is_a?(Regexp)
+          raise ArgumentError, %(format must be a Regexp (given #{constraint.class})) unless constraint.is_a?(Regexp)
+        end
 
-          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must match format #{input.source}) unless value.match?(input)
+        def apply
+          raise InvalidParameterError, %(Parameter #{name} value "#{value}" must match format #{constraint.source}) unless value.match?(constraint)
+        end
+
+        private
+
+        def constraint
+          @constraint ||= options[:format]
         end
       end
     end
