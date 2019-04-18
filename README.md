@@ -71,7 +71,7 @@ require 'sinatra/json'
 require 'sinatra/param'
 
 class App < Sinatra::Base
-  helpers Sinatra::Param
+  register Sinatra::Param
 
   before do
     content_type :json
