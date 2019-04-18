@@ -110,16 +110,16 @@ end
 
 sinatra-param supports the following parameter types:
 
-| Type       | Class        | Matches            | Options/Defaults           |
-|:-----------|:-------------|:-------------------|:---------------------------|
-| `:string`  | `String`     | `foo`, `bar`       |                            |
-| `:array`   | `Array`      | `foo,bar,biz,baz`  | `delimiter: ','`           |
-| `:boolean` | `TrueClass`  | `true`, `yes`, `1` |                            |
-|            | `FalseClass` | `false`, `no`, `0` |                            |
-| `:hash`    | `Hash`       | `foo:bar,biz:baz`  | `delimiter: ','`           |
-|            |              |                    | `separator: ':'`           |
-| `:integer` | `Integer`    | `1`, `500`, `1000` |                            |
-| `:float`   | `Float`      | `38.89`, `-77.03`  |                            |
+| Type       | Class        | Matches            | Options/Defaults |
+|:-----------|:-------------|:-------------------|:-----------------|
+| `:string`  | `String`     | `foo`, `bar`       |                  |
+| `:array`   | `Array`      | `foo,bar,biz,baz`  | `delimiter: ','` |
+| `:boolean` | `TrueClass`  | `true`, `yes`, `1` |                  |
+|            | `FalseClass` | `false`, `no`, `0` |                  |
+| `:hash`    | `Hash`       | `foo:bar,biz:baz`  | `delimiter: ','` |
+|            |              |                    | `separator: ':'` |
+| `:integer` | `Integer`    | `1`, `500`, `1000` |                  |
+| `:float`   | `Float`      | `38.89`, `-77.03`  |                  |
 
 By default, `:array` parameters are comma-delimited. This behavior may be customized using the `delimiter` option:
 
@@ -156,29 +156,35 @@ end
 
 sinatra-param supports the following parameter validations:
 
-| Name       | Value Class                 | Usage                    |
-|:-----------|:----------------------------|:-------------------------|
-| `format`   | `RegExp`                    | `format: %r{^https?://}` |
-| `in`       | `Array`                     | `in: ['ASC', 'DESC']`    |
-| `match`    | `Array`, `Float`, etc.†     | `match: 'foo'`           |
-| `max`      | `Float` or `Integer`        | `max: 10.5`              |
-| `min`      | `Float` or `Integer`        | `min: 100`               |
-| `required` | `TrueClass` or `FalseClass` | `required: true`         |
-| `within`   | `Range`                     | `within: (A..Z)`         |
+| Name         | Value Class               | Usage                    |
+|:-------------|:--------------------------|:-------------------------|
+| `format`     | `RegExp`                  | `format: %r{^https?://}` |
+| `in`         | `Array`                   | `in: ['ASC', 'DESC']`    |
+| `match`      | `Array`, `Float`, etc.¹   | `match: 'foo'`           |
+| `max`        | `Float`, `Integer`        | `max: 10.5`              |
+| `min`        | `Float`, `Integer`        | `min: 100`               |
+| `maxlength`² | `Integer`                 | `maxlength: 10`          |
+| `minlength`² | `Integer`                 | `minlength: 10`          |
+| `required`   | `TrueClass`, `FalseClass` | `required: true`         |
+| `within`     | `Range`                   | `within: (A..Z)`         |
 
-† `match` parameter validation values must be of the same class as the parameter itself:
+Parameter validations are applied in the order in which they are passed to the `param` helper:
+
+```ruby
+param :url, :string, format: Regexp.new('^https?://'), required: true
+```
+
+In the example above, the `format` validation will execute before the `required` validation. This may be used intentionally to influence the order in which errors are raised.
+
+#### Validations Footnotes
+
+¹ `match` parameter validation values must be of the same Class as the parameter itself:
 
 ```ruby
 param :agree_to_terms, :string, match: 'yes', required: true
 ```
 
-Parameter validations are applied in the order in which they are passed to the `param` helper:
-
-```ruby
-param :url, :string, format: %r{^https?://}, required: true
-```
-
-In the example above, the `format` validation will execute before the `required` validation. This may be used intentionally to influence the order in which errors are raised.
+² `maxlength` and `minlength` parameter validations may be applied to `:array`, `:hash`, and `:string` parameter types and validates using each Class' `length` method.
 
 ### Defaults
 
