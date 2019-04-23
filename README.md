@@ -158,15 +158,15 @@ sinatra-param supports the following parameter validations:
 
 | Name         | Value Class               | Usage                    |
 |:-------------|:--------------------------|:-------------------------|
-| `format`     | `RegExp`                  | `format: %r{^https?://}` |
-| `in`         | `Array`                   | `in: ['ASC', 'DESC']`    |
-| `match`      | `Array`, `Float`, etc.¹   | `match: 'foo'`           |
-| `max`        | `Float`, `Integer`        | `max: 10.5`              |
-| `min`        | `Float`, `Integer`        | `min: 100`               |
-| `maxlength`² | `Integer`                 | `maxlength: 10`          |
-| `minlength`² | `Integer`                 | `minlength: 10`          |
 | `required`   | `TrueClass`, `FalseClass` | `required: true`         |
+| `format`     | `RegExp`                  | `format: %r{^https?://}` |
+| `match`      | `Array`, `Float`, etc.¹   | `match: 'foo'`           |
+| `in`         | `Array`                   | `in: ['ASC', 'DESC']`    |
 | `within`     | `Range`                   | `within: (A..Z)`         |
+| `min`        | `Float`, `Integer`        | `min: 100`               |
+| `max`        | `Float`, `Integer`        | `max: 10.5`              |
+| `minlength`² | `Integer`                 | `minlength: 10`          |
+| `maxlength`² | `Integer`                 | `maxlength: 10`          |
 
 Parameter validations are applied in the order in which they are passed to the `param` helper:
 
@@ -184,7 +184,7 @@ In the example above, the `format` validation will execute before the `required`
 param :agree_to_terms, :string, match: 'yes', required: true
 ```
 
-² `maxlength` and `minlength` parameter validations may be applied to `:array`, `:hash`, and `:string` parameter types and validates using each Class' `length` method.
+² `minlength` and `maxlength` parameter validations may be applied to `:array`, `:hash`, and `:string` parameter types and validates using each Class' `length` method.
 
 ### Defaults
 
