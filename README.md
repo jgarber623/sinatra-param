@@ -284,13 +284,13 @@ A request to `/search?order=BACKWARDS` would raise a `Sinatra::Param::InvalidPar
 
 ### Exception Classes
 
-Under the covers, sinatra-param captures one of three types of user-level errors. Each is a subclass Ruby's `StandardError`:
+Under the covers, sinatra-param captures one of three types of user-level errors. Each is a subclass of `Sinatra::Param::Error` (which itself is a subclass of Ruby's `StandardError`):
 
 - `Sinatra::Param::InvalidParameterError`
 - `Sinatra::Param::RequiredParameterError` (raised by the `all_or_none_of` and `any_of` helpers)
-- `Sinatra::Param::TooManyParametersError` (raise by the `one_of` helper)
+- `Sinatra::Param::TooManyParametersError` (raised by the `one_of` helper)
 
-Additionally, `Sinatra::Param::ArgumentError`s is raised if implementation errors are encountered (e.g. mismatches between a parameter type and its default value).
+Additionally, `Sinatra::Param::ArgumentError` is raised if implementation errors are encountered (e.g. mismatches between a parameter type and its default value).
 
 ### Configuring Exception Handling
 

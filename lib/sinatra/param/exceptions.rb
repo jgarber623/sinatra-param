@@ -1,11 +1,13 @@
 module Sinatra
   module Param
-    class ArgumentError < StandardError; end
+    class Error < StandardError; end
 
-    class InvalidParameterError < StandardError; end
+    class ArgumentError < Error; end
 
-    class RequiredParameterError < StandardError; end
+    class InvalidParameterError < Error; end
 
-    class TooManyParametersError < StandardError; end
+    class RequiredParameterError < Error; end
+
+    class TooManyParametersError < Error; end
   end
 end
