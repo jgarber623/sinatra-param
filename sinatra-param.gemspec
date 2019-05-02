@@ -3,6 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'sinatra/param/version'
 
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
   spec.required_ruby_version = ['>= 2.5', '< 2.7']
 
@@ -20,6 +21,11 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ['lib']
 
+  spec.metadata = {
+    'bug_tracker_uri' => "#{spec.homepage}/issues",
+    'changelog_uri'   => "#{spec.homepage}/blob/v#{spec.version}/CHANGELOG.md"
+  }
+
   spec.add_development_dependency 'rack-test', '~> 1.1'
   spec.add_development_dependency 'rake', '~> 12.3'
   spec.add_development_dependency 'reek', '~> 5.4'
@@ -34,3 +40,4 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'activesupport', '~> 5.2'
   spec.add_runtime_dependency 'sinatra', '~> 2.0'
 end
+# rubocop:enable Metrics/BlockLength
