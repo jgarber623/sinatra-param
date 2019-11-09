@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop-performance', '~> 1.5'
   spec.add_development_dependency 'rubocop-rspec', '~> 1.35'
   spec.add_development_dependency 'simplecov', '~> 0.17.1'
-  spec.add_development_dependency 'simplecov-console', '~> 0.5.0'
+  spec.add_development_dependency 'simplecov-console', '~> 0.6.0'
   spec.add_development_dependency 'sinatra-contrib', '~> 2.0'
 
   spec.add_runtime_dependency 'activesupport', '~> 6.0'
