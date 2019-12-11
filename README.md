@@ -2,7 +2,7 @@
 
 **Parameter Validation, Transformation, and Type Coercion for [Sinatra](http://sinatrarb.com) applications.**
 
-[![Build](https://img.shields.io/travis/com/jgarber623/sinatra-param/master.svg?style=for-the-badge)](https://travis-ci.com/jgarber623/sinatra-param)
+[![Build](https://img.shields.io/circleci/build/gh/jgarber623/sinatra-param?style=for-the-badge)](https://circleci.com/gh/jgarber623/sinatra-param)
 [![Dependencies](https://img.shields.io/depfu/jgarber623/sinatra-param.svg?style=for-the-badge)](https://depfu.com/github/jgarber623/sinatra-param)
 [![Maintainability](https://img.shields.io/codeclimate/maintainability/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param)
 [![Coverage](https://img.shields.io/codeclimate/c/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param/code)
