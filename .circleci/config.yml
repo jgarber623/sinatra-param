@@ -129,4 +129,3 @@ workflows:
       - upload-coverage:
           requires:
             - test-ruby-2-5
-            - test-ruby-2-6
