@@ -8,44 +8,50 @@ defaults: &defaults
   working_directory: ~/workspace
 
 default-build-steps: &default-build-steps
-  steps:
-    - restore_cache:
-        keys:
-          - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-    - run: bundle lock
-    - restore_cache:
-        keys:
-          - v1-bundle-{{ checksum "Gemfile.lock" }}
-    - run: bundle install
-    - save_cache:
-        key: v1-bundle-{{ checksum "Gemfile.lock" }}
-        paths:
-          - ~/workspace/vendor/bundle
-    - persist_to_workspace:
-        root: .
-        paths:
-          - Gemfile.lock
+  - restore_cache:
+      keys:
+        - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+  - run: bundle lock
+  - restore_cache:
+      keys:
+        - v1-bundle-{{ checksum "Gemfile.lock" }}
+  - run: bundle install
+  - save_cache:
+      key: v1-bundle-{{ checksum "Gemfile.lock" }}
+      paths:
+        - ~/workspace/vendor/bundle
+  - persist_to_workspace:
+      root: .
+      paths:
+        - Gemfile.lock
 
-default-reek-steps: &default-reek-steps
-  steps:
-    - run-test-program:
-        program: bin/rake reek
+executors:
+  "ruby-2.5-executor":
+    <<: *defaults
+    docker:
+      - image: circleci/ruby:2.5-buster
+  "ruby-2.6-executor":
+    <<: *defaults
+    docker:
+      - image: circleci/ruby:2.6-buster
 
-default-rubocop-steps: &default-rubocop-steps
-  steps:
-    - run-test-program:
-        program: bin/rake rubocop
-
-default-rspec-steps: &default-rspec-steps
-  steps:
-    - run-test-program:
-        program: bin/rake spec
-
-commands:
-  run-test-program:
-    parameters:
-      program:
-        type: string
+jobs:
+  checkout-code:
+    executor: ruby-2.5-executor
+    steps:
+      - checkout
+      - save_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/workspace
+  "build-ruby-2.5":
+    executor: ruby-2.5-executor
+    steps: *default-build-steps
+  "build-ruby-2.6":
+    executor: ruby-2.6-executor
+    steps: *default-build-steps
+  "test-ruby-2.5":
+    executor: ruby-2.5-executor
     steps:
       - restore_cache:
           keys:
@@ -56,78 +62,29 @@ commands:
           keys:
             - v1-bundle-{{ checksum "Gemfile.lock" }}
       - run: bundle install
-      - run: << parameters.program >>
-
-executors:
-  ruby25-executor:
-    docker:
-      - image: circleci/ruby:2.5-buster
-    <<: *defaults
-  ruby26-executor:
-    docker:
-      - image: circleci/ruby:2.6-buster
-    <<: *defaults
-
-jobs:
-  checkout-code:
-    executor: ruby25-executor
-    steps:
-      - checkout
-      - save_cache:
-          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ~/workspace
-  build-ruby25:
-    executor: ruby25-executor
-    <<: *default-build-steps
-  build-ruby26:
-    executor: ruby26-executor
-    <<: *default-build-steps
-  test-ruby25-reek:
-    executor: ruby25-executor
-    <<: *default-reek-steps
-  test-ruby25-rubocop:
-    executor: ruby25-executor
-    <<: *default-rubocop-steps
-  test-ruby25-spec:
-    executor: ruby25-executor
-    <<: *default-rspec-steps
-  test-ruby26-reek:
-    executor: ruby26-executor
-    <<: *default-reek-steps
-  test-ruby26-rubocop:
-    executor: ruby26-executor
-    <<: *default-rubocop-steps
-  test-ruby26-spec:
-    executor: ruby26-executor
-    <<: *default-rspec-steps
+      - run:
+          name: Install Code Climate test reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Run static code analysis and test suite
+          command: |
+            bin/rake reek
+            bin/rake rubocop
+            bin/rake spec
 
 workflows:
   version: 2.1
   build-and-test:
     jobs:
       - checkout-code
-      - build-ruby25:
+      - "build-ruby-2.5":
           requires:
             - checkout-code
-      - build-ruby26:
+      - "test-ruby-2.5":
+          requires:
+            - build-ruby-2.5
+      - "build-ruby-2.6":
           requires:
             - checkout-code
-      - test-ruby25-reek:
-          requires:
-            - build-ruby25
-      - test-ruby25-rubocop:
-          requires:
-            - build-ruby25
-      - test-ruby25-spec:
-          requires:
-            - build-ruby25
-      - test-ruby26-reek:
-          requires:
-            - build-ruby26
-      - test-ruby26-rubocop:
-          requires:
-            - build-ruby26
-      - test-ruby26-spec:
-          requires:
-            - build-ruby26
