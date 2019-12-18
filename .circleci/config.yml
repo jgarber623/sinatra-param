@@ -37,15 +37,15 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/workspace
-  "build-ruby-2.5":
+  build-ruby-2-5:
     docker:
       - image: circleci/ruby:2.5-buster
     <<: [*defaults, *default-build-steps]
-  "build-ruby-2.6":
+  build-ruby-2-6:
     docker:
       - image: circleci/ruby:2.6-buster
     <<: [*defaults, *default-build-steps]
-  "test-ruby-2.5":
+  test-ruby-2-5:
     docker:
       - image: circleci/ruby:2.5-buster
     <<: *defaults
@@ -75,12 +75,12 @@ workflows:
   build-and-test:
     jobs:
       - checkout-code
-      - "build-ruby-2.5":
+      - build-ruby-2-5:
           requires:
             - checkout-code
-      - "test-ruby-2.5":
+      - test-ruby-2-5:
           requires:
-            - build-ruby-2.5
-      - "build-ruby-2.6":
+            - build-ruby-2-5
+      - build-ruby-2-6:
           requires:
             - checkout-code
