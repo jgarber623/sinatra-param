@@ -70,6 +70,45 @@ jobs:
             bin/rake reek
             bin/rake rubocop
             bin/rake spec
+      - persist_to_workspace:
+          root: .
+          paths:
+            - cc-test-reporter
+            - coverage/.resultset.json
+  test-ruby-2-6:
+    docker:
+      - image: circleci/ruby:2.6-buster
+    <<: *defaults
+    steps:
+      - restore_cache:
+          keys:
+            - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - attach_workspace:
+          at: ~/workspace
+      - restore_cache:
+          keys:
+            - v1-bundle-{{ checksum "Gemfile.lock" }}
+      - run: bundle install
+      - run:
+          name: Run static code analysis and test suite
+          command: |
+            bin/rake reek
+            bin/rake rubocop
+            bin/rake spec
+  upload-coverage:
+    docker:
+      - image: circleci/ruby:2.5-buster
+    <<: *defaults
+    steps:
+      - restore_cache:
+          keys:
+            - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - attach_workspace:
+          at: ~/workspace
+      - run:
+          name: Upload coverage report
+          command: |
+            ./cc-test-reporter after-build --exit-code $?
 
 workflows:
   build-and-test:
@@ -84,3 +123,10 @@ workflows:
       - build-ruby-2-6:
           requires:
             - checkout-code
+      - test-ruby-2-6:
+          requires:
+            - build-ruby-2-6
+      - upload-coverage:
+          requires:
+            - test-ruby-2-5
+            - test-ruby-2-6
