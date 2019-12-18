@@ -8,36 +8,29 @@ defaults: &defaults
   working_directory: ~/workspace
 
 default-build-steps: &default-build-steps
-  - restore_cache:
-      keys:
-        - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-  - run: bundle lock
-  - restore_cache:
-      keys:
-        - v1-bundle-{{ checksum "Gemfile.lock" }}
-  - run: bundle install
-  - save_cache:
-      key: v1-bundle-{{ checksum "Gemfile.lock" }}
-      paths:
-        - ~/workspace/vendor/bundle
-  - persist_to_workspace:
-      root: .
-      paths:
-        - Gemfile.lock
-
-executors:
-  "ruby-2.5-executor":
-    <<: *defaults
-    docker:
-      - image: circleci/ruby:2.5-buster
-  "ruby-2.6-executor":
-    <<: *defaults
-    docker:
-      - image: circleci/ruby:2.6-buster
+  steps:
+    - restore_cache:
+        keys:
+          - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+    - run: bundle lock
+    - restore_cache:
+        keys:
+          - v1-bundle-{{ checksum "Gemfile.lock" }}
+    - run: bundle install
+    - save_cache:
+        key: v1-bundle-{{ checksum "Gemfile.lock" }}
+        paths:
+          - ~/workspace/vendor/bundle
+    - persist_to_workspace:
+        root: .
+        paths:
+          - Gemfile.lock
 
 jobs:
   checkout-code:
-    executor: ruby-2.5-executor
+    docker:
+      - image: circleci/ruby:2.5-buster
+    <<: *defaults
     steps:
       - checkout
       - save_cache:
@@ -45,13 +38,17 @@ jobs:
           paths:
             - ~/workspace
   "build-ruby-2.5":
-    executor: ruby-2.5-executor
-    steps: *default-build-steps
+    docker:
+      - image: circleci/ruby:2.5-buster
+    <<: [*defaults, *default-build-steps]
   "build-ruby-2.6":
-    executor: ruby-2.6-executor
-    steps: *default-build-steps
+    docker:
+      - image: circleci/ruby:2.6-buster
+    <<: [*defaults, *default-build-steps]
   "test-ruby-2.5":
-    executor: ruby-2.5-executor
+    docker:
+      - image: circleci/ruby:2.5-buster
+    <<: *defaults
     steps:
       - restore_cache:
           keys:
@@ -75,7 +72,6 @@ jobs:
             bin/rake spec
 
 workflows:
-  version: 2.1
   build-and-test:
     jobs:
       - checkout-code
