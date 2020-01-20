@@ -5,12 +5,12 @@ require:
 Layout/HashAlignment:
   EnforcedHashRocketStyle: table
 
+Layout/LineLength:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
-
-Metrics/LineLength:
-  Enabled: false
 
 Naming/RescuedExceptionsVariableName:
   PreferredName: exception
