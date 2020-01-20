@@ -5,7 +5,7 @@ require 'sinatra/param/version'
 
 # rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = ['>= 2.5', '< 2.7']
+  spec.required_ruby_version = ['>= 2.5', '< 2.8']
 
   spec.name          = 'sinatra-param'
   spec.version       = Sinatra::Param::VERSION
