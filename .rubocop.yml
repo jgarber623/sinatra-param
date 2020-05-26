@@ -2,8 +2,8 @@ require:
   - rubocop-performance
   - rubocop-rspec
 
-Layout/HashAlignment:
-  EnforcedHashRocketStyle: table
+AllCops:
+  NewCops: disable
 
 Layout/LineLength:
   Enabled: false
