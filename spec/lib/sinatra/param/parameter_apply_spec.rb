@@ -1,4 +1,4 @@
-describe Sinatra::Param::Parameter, :apply do
+RSpec.describe Sinatra::Param::Parameter, :apply do
   context 'when given invalid Coercion arguments' do
     it 'raises an ArgumentError' do
       message = 'delimiter and separator cannot be the same'

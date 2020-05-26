@@ -1,4 +1,4 @@
-describe Sinatra::Param::Coercions::ArrayCoercion do
+RSpec.describe Sinatra::Param::Coercions::ArrayCoercion do
   context 'when given a non-Array-like String' do
     it 'returns an Array' do
       expect(described_class.new(:foo, 'bar').apply).to eq(['bar'])

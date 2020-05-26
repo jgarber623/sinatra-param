@@ -1,4 +1,4 @@
-describe Sinatra::Param::Helpers, :all_or_none_of do
+RSpec.describe Sinatra::Param::Helpers, :all_or_none_of do
   before do
     mock_app do
       register Sinatra::Param

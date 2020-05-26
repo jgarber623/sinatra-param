@@ -1,4 +1,4 @@
-describe Sinatra::Param::Validations::InValidation do
+RSpec.describe Sinatra::Param::Validations::InValidation do
   context 'when given a non-Array in value' do
     it 'raises an ArgumentError' do
       message = 'in must be an Array (given String)'

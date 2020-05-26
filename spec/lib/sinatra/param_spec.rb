@@ -1,4 +1,4 @@
-describe Sinatra::Param do
+RSpec.describe Sinatra::Param do
   describe 'App' do
     before do
       app = Class.new(Sinatra::Base) do

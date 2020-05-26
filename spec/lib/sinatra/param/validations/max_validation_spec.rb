@@ -1,4 +1,4 @@
-describe Sinatra::Param::Validations::MaxValidation do
+RSpec.describe Sinatra::Param::Validations::MaxValidation do
   context 'when given a String parameter type' do
     it 'raises an ArgumentError' do
       message = 'type must be one of [:float, :integer] (given :string)'

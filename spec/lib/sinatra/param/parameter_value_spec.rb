@@ -1,4 +1,4 @@
-describe Sinatra::Param::Parameter, :value do
+RSpec.describe Sinatra::Param::Parameter, :value do
   context 'when applying a Default' do
     context 'when no default option is given' do
       it 'sets value to a String' do

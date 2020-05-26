@@ -1,4 +1,4 @@
-describe Sinatra::Param::Validations::FormatValidation do
+RSpec.describe Sinatra::Param::Validations::FormatValidation do
   context 'when given an Integer parameter type' do
     it 'raises an ArgumentError' do
       message = 'type must be :string (given :integer)'

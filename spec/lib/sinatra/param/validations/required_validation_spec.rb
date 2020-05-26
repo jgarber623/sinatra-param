@@ -1,4 +1,4 @@
-describe Sinatra::Param::Validations::RequiredValidation do
+RSpec.describe Sinatra::Param::Validations::RequiredValidation do
   context 'when given a falsy option value' do
     it 'returns nil' do
       expect(described_class.new(:foo, :string, 'bar', required: false).apply).to be(nil)

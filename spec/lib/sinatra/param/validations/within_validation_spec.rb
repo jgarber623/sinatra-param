@@ -1,4 +1,4 @@
-describe Sinatra::Param::Validations::WithinValidation do
+RSpec.describe Sinatra::Param::Validations::WithinValidation do
   context 'when given a non-Range in value' do
     it 'raises an ArgumentError' do
       message = 'within must be a Range (given String)'

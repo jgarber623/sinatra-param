@@ -1,4 +1,4 @@
-describe Sinatra::Param::Coercions::HashCoercion do
+RSpec.describe Sinatra::Param::Coercions::HashCoercion do
   context 'when given a non-Hash-like String' do
     it 'raises an InvalidParameterError' do
       message = 'Parameter foo value "bar" must be a Hash'

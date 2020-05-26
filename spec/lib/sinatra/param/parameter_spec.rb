@@ -1,4 +1,4 @@
-describe Sinatra::Param::Parameter do
+RSpec.describe Sinatra::Param::Parameter do
   context 'when name is not a Symbol' do
     it 'raises an ArgumentError' do
       message = 'name must be a Symbol (given String)'

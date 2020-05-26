@@ -1,4 +1,4 @@
-describe Sinatra::Param::Validations::MatchValidation do
+RSpec.describe Sinatra::Param::Validations::MatchValidation do
   context 'when parameter type and match class do not match' do
     it 'raises an ArgumentError' do
       message = 'match must be an Integer (given String)'

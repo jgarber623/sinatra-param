@@ -1,4 +1,4 @@
-describe Sinatra::Param::Validations::MaxlengthValidation do
+RSpec.describe Sinatra::Param::Validations::MaxlengthValidation do
   context 'when given a Float parameter type' do
     it 'raises an ArgumentError' do
       message = 'type must be one of [:array, :hash, :string] (given :float)'

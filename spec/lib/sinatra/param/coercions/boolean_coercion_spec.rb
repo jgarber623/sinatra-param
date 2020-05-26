@@ -1,4 +1,4 @@
-describe Sinatra::Param::Coercions::BooleanCoercion do
+RSpec.describe Sinatra::Param::Coercions::BooleanCoercion do
   context 'when given a non-Boolean-like String' do
     it 'raises an InvalidParameterError' do
       message = 'Parameter foo value "bar" must be a Boolean'

@@ -1,4 +1,4 @@
-describe Sinatra::Param::Coercions::IntegerCoercion do
+RSpec.describe Sinatra::Param::Coercions::IntegerCoercion do
   context 'when given a non-Integer-like Sring' do
     it 'raises an InvalidParameterError' do
       message = 'Parameter foo value "bar" must be an Integer'

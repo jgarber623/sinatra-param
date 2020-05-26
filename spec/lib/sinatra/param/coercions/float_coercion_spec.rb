@@ -1,4 +1,4 @@
-describe Sinatra::Param::Coercions::FloatCoercion do
+RSpec.describe Sinatra::Param::Coercions::FloatCoercion do
   context 'when given a non-Float-like Sring' do
     it 'raises an InvalidParameterError' do
       message = 'Parameter foo value "bar" must be a Float'
