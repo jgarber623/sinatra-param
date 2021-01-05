@@ -7,7 +7,7 @@ module Sinatra
         def initialize(*args)
           super
 
-          raise ArgumentError, %(match must be a#{'n' if [Array, Integer].include?(value.class)} #{value.class} (given #{constraint.class})) unless value.class == constraint.class
+          raise ArgumentError, %(match must be a#{'n' if [Array, Integer].include?(value.class)} #{value.class} (given #{constraint.class})) unless value.instance_of?(constraint.class)
         end
 
         def apply
