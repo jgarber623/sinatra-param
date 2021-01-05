@@ -22,6 +22,6 @@ Gem::Specification.new do |spec|
   spec.metadata['bug_tracker_uri'] = "#{spec.homepage}/issues"
   spec.metadata['changelog_uri']   = "#{spec.homepage}/blob/v#{spec.version}/CHANGELOG.md"
 
-  spec.add_runtime_dependency 'activesupport', '~> 6.0'
+  spec.add_runtime_dependency 'activesupport', '~> 6.1'
   spec.add_runtime_dependency 'sinatra', '~> 2.0'
 end
