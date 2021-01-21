@@ -2,10 +2,9 @@
 
 **Parameter Validation, Transformation, and Type Coercion for [Sinatra](http://sinatrarb.com) applications.**
 
-[![Build](https://img.shields.io/travis/com/jgarber623/sinatra-param?style=for-the-badge)](https://travis-ci.com/jgarber623/sinatra-param)
-[![Dependencies](https://img.shields.io/depfu/jgarber623/sinatra-param.svg?style=for-the-badge)](https://depfu.com/github/jgarber623/sinatra-param)
-[![Maintainability](https://img.shields.io/codeclimate/maintainability/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param)
-[![Coverage](https://img.shields.io/codeclimate/c/jgarber623/sinatra-param.svg?style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param/code)
+[![Build](https://img.shields.io/circleci/build/github/jgarber623/sinatra-param?logo=circleci&style=for-the-badge)](https://app.circleci.com/pipelines/github/jgarber623/sinatra-param)
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/jgarber623/sinatra-param.svg?logo=code-climate&style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param)
+[![Coverage](https://img.shields.io/codeclimate/c/jgarber623/sinatra-param.svg?logo=code-climate&style=for-the-badge)](https://codeclimate.com/github/jgarber623/sinatra-param/code)
 
 sinatra-param adds useful helpers to your Sinatra application, allowing you to declare, validate, and transform URL endpoint parameters. By default, Sinatra route parameters are exposed to your application as `String`s which may then be coerced to more useful types as needed. sinatra-param smooths over the rough edges and takes care of type coercion and parameter validation on your behalf.
 
